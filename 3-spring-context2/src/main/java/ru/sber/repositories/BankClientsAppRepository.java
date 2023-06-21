@@ -1,5 +1,6 @@
 package ru.sber.repositories;
 
+import org.springframework.stereotype.Repository;
 import ru.sber.models.Client;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
  * Класс банковского приложения для предоставления информации о клиентах
  * Содержит переопределенный метод для получения клиентов банка и метод для проверки пользователей
  */
+@Repository
 public class BankClientsAppRepository implements BankRepository {
 
     @Override

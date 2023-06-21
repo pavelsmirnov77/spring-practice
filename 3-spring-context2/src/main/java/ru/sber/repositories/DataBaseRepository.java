@@ -1,6 +1,7 @@
 package ru.sber.repositories;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.sber.models.Client;
 import ru.sber.models.Payment;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * Класс, реализующий базу данных с историей переводов
  * Содержит методы добавления платежа в лист и метод вывода листа с историей платежей
  */
-@Component
+@Repository
 public class DataBaseRepository implements BankRepository{
     List<Payment> paymentList = new ArrayList<>();
 
