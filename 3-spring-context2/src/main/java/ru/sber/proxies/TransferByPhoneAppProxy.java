@@ -25,7 +25,7 @@ public class TransferByPhoneAppProxy {
             return;
         }
         Payment payment  = new Payment(clientNumber, sum);
-        System.out.printf("Перевод клиенту с номером %s на сумму %s руб. выполнен %n", clientNumber, sum);
+        System.out.printf("Перевод клиенту %s на сумму %s руб. выполнен %n", payment.getClientName(), sum);
         dataBaseRepository.addPayment(payment);
     }
 }

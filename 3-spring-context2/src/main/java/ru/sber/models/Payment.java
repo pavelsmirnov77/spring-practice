@@ -30,7 +30,7 @@ public class Payment {
     }
 
     //Метод для поиска имени клиента по номеру телефона
-    private String getClientName() {
+    public String getClientName() {
         Client client = findClientByNumber(clientNumber);
         return client.getClientName();
     }
