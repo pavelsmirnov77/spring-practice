@@ -6,6 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sber.aspects.NotEmptyAspect;
 import ru.sber.config.ProjectConfig;
+import ru.sber.models.Animals;
 import ru.sber.services.ArgumentsService;
 
 import java.util.List;
@@ -18,11 +19,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {ProjectConfig.class})
 public class AppTests {
-    private static final String NOT_EMPTY_STRING = "Hello world!";
+    private static final String NOT_EMPTY_STRING = "Бобик";
     private static final String EMPTY_STRING = "";
-    private static final List<Integer> NOT_EMPTY_COLLECTION = List.of(1, 2, 3);
-    private static final List<Integer> EMPTY_COLLECTION = List.of();
-    private static final Integer NOT_NULL_NUMBER = 100;
+    private static final List<Animals> NOT_EMPTY_COLLECTION = List.of(
+            new Animals("Собака", "Бобик", 5)
+    );
+    private static final List<Animals> EMPTY_COLLECTION = List.of();
+    private static final Integer NOT_NULL_NUMBER = 5;
     private static final Integer NULL_NUMBER = null;
     private Logger serviceLogger;
     private Logger notEmptyAspectLogger;
@@ -44,9 +47,8 @@ public class AppTests {
 
     @Test
     public void testMethodWithStringArgs() {
-
         argumentsService.methodWithStringArgs(NOT_EMPTY_STRING);
-        verify(serviceLogger).info("Текст: " + NOT_EMPTY_STRING);
+        verify(serviceLogger).info("Найдено животное: вид: Собака, имя: Бобик, возраст: 5");
 
         assertThrows(IllegalArgumentException.class, () -> {
             argumentsService.methodWithStringArgs(EMPTY_STRING);
@@ -58,7 +60,7 @@ public class AppTests {
     public void testMethodWithIntegerArgs() {
 
         argumentsService.methodWithIntegerArgs(NOT_NULL_NUMBER);
-        verify(serviceLogger).info(NOT_NULL_NUMBER.toString());
+        verify(serviceLogger).info("Найдено животное: вид: Собака, имя: Бобик, возраст: 5");
 
         assertThrows(IllegalArgumentException.class, () -> {
             argumentsService.methodWithIntegerArgs(NULL_NUMBER);
@@ -69,7 +71,7 @@ public class AppTests {
     @Test
     public void testMethodWithCollectionArgs() {
         argumentsService.methodWithCollectionArgs(NOT_EMPTY_COLLECTION);
-        verify(serviceLogger).info("Коллекция: " + NOT_EMPTY_COLLECTION);
+        verify(serviceLogger).info("Список животных: " + NOT_EMPTY_COLLECTION);
 
         assertThrows(IllegalArgumentException.class, () -> {
             argumentsService.methodWithCollectionArgs(EMPTY_COLLECTION);
@@ -80,6 +82,6 @@ public class AppTests {
     @Test
     public void testMethodWithoutAnnotation() {
         argumentsService.methodWithoutAnnotation(EMPTY_STRING);
-        verify(serviceLogger).info(EMPTY_STRING);
+        verify(serviceLogger).info("Животные не найдены");
     }
 }
