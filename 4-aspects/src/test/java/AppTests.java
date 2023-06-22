@@ -73,7 +73,7 @@ public class AppTests {
 
         assertThrows(IllegalArgumentException.class, () -> {
             argumentsService.methodWithCollectionArgs(EMPTY_COLLECTION);
-            verify(notEmptyAspectLogger).log(Level.WARNING, "Ошибка: 1-й строчный аргумент является пустым");
+            verify(notEmptyAspectLogger).log(Level.WARNING, "Ошибка: 1-й аргумент-список является пустым");
         });
     }
 
