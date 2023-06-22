@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
- * Файл конфигуратор
+ * Класс конфигуратор
  */
 @Configuration
 @ComponentScan(basePackages = {"ru.sber.aspects", "ru.sber.services"})
