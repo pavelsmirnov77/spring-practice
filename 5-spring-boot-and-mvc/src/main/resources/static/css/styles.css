@@ -121,68 +121,88 @@ footer {
     text-align: center;
 }
 
-.carousel {
+* {box-sizing:border-box}
+
+.slideshow-container {
+    max-width: 1000px;
     position: relative;
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
+    margin: auto;
 }
 
-.carousel-inner {
-    display: flex;
-    max-width: 90%;
-    justify-content: center;
-    align-items: center;
+.mySlides {
+    display: none;
 }
 
-.carousel-item {
-    flex: 0 0 auto;
-    margin-right: 20px;
-    opacity: 0;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 0.5s ease;
-}
-
-.carousel-item.active {
-    opacity: 1;
-    justify-content: center;
-    align-items: center;
-}
-
-.carousel-prev,
-.carousel-next {
+.prev, .next {
+    cursor: pointer;
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    font-size: 24px;
-    text-align: center;
-    line-height: 40px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
 }
 
-.carousel-prev {
-    left: 0;
-}
-
-.carousel-next {
+.next {
     right: 0;
+    border-radius: 3px 0 0 3px;
 }
 
-.carousel-prev:before {
-    transform: translate(-50%, -50%) rotate(-45deg);
+.prev:hover, .next:hover {
+    background-color: rgba(0,0,0,0.8);
 }
 
-.carousel-next:before {
-    transform: translate(-50%, -50%) rotate(135deg);
+/* Caption text */
+.text {
+    color: #f2f2f2;
+    font-size: 15px;
+    padding: 8px 12px;
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
 }
 
-.carousel-prev:hover,
-.carousel-next:hover {
-    background-color: rgba(0, 0, 0, 0.7);
+.number {
+    color: #f2f2f2;
+    font-size: 12px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+}
+
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+    background-color: #717171;
+}
+
+.fade {
+    -webkit-animation-name: fade;
+    -webkit-animation-duration: 1.5s;
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+@keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
 }
