@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Сайт о пиве</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="/scripts/script.js"></script>
 </head>
 <body>
@@ -25,33 +26,37 @@
         <p>Пиво имеет древнюю историю, восходящую к древним цивилизациям. Оно было известно еще в древнем Египте и широко распространено в средние века в Европе.</p>
     </section>
 
-    <section class="carousel fade-in">
+    <section>
         <h2>Виды пива</h2>
-        <div class="carousel-inner">
-            <div class="beer-type">
-                <h3>Тёмное пиво</h3>
-                <div class="beer-image">
-                    <img src="/images/dark_bear.png" alt="Тёмное пиво">
-                    <div class="beer-description">
-                        <p>Описание тёмного пива</p>
+        <div class="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="beer-type">
+                        <h3>Тёмное пиво</h3>
+                        <div class="beer-image">
+                            <img src="/images/dark_bear.png" alt="Тёмное пиво">
+                            <div class="beer-description">
+                                <p>Описание тёмного пива</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="beer-type">
+                        <h3>Белое пиво</h3>
+                        <div class="beer-image">
+                            <img src="/images/white_bear.png" alt="Белое пиво">
+                            <div class="beer-description">
+                                <p>Описание белого пива</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="beer-type">
-                <h3>Белое пиво</h3>
-                <div class="beer-image">
-                    <img src="/images/white_bear.png" alt="Белое пиво">
-                    <div class="beer-description">
-                        <p>Описание белого пива</p>
-                    </div>
-                </div>
-            </div>
+            <button class="carousel-prev"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-next"><i class="fas fa-chevron-right"></i></button>
+            <script src="/scripts/carousel.js"></script>
         </div>
-        <div class="carousel-controls">
-            <div class="carousel-prev">&#8249;</div>
-            <div class="carousel-next">&#8250;</div>
-        </div>
-        <script src="/scripts/carousel.js"></script>
     </section>
 
     <section>
