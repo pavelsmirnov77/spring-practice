@@ -1,0 +1,163 @@
+/* Общие стили */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fade-in 1s ease forwards;
+}
+
+@keyframes fade-in {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin: 0;
+    padding: 20px 0;
+}
+
+h2 {
+    color: #555;
+}
+
+p {
+    line-height: 1.5;
+}
+
+/* Шапка */
+
+header {
+    background-size: cover;
+    height: 400px;
+    position: relative;
+}
+
+.header-image {
+    position: static;
+    height: 400px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.header-image h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 36px;
+}
+
+/* Разделы сайта */
+
+section {
+    background-color: #f5f5f5;
+    padding: 40px;
+    margin-bottom: 20px;
+}
+
+/* Виды пива */
+
+.beer-type {
+    margin-bottom: 30px;
+}
+
+.beer-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.beer-image img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s;
+}
+
+.beer-description {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.beer-image:hover .beer-description {
+    opacity: 1;
+    z-index: 1; /* Добавлено */
+}
+
+
+.description {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* Футер */
+
+footer {
+    background-color: #ccc;
+    padding: 20px;
+    text-align: center;
+}
+
+/* carousel.css */
+.carousel {
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-inner {
+    display: flex;
+    transition: transform 0.3s ease;
+}
+
+.carousel-prev,
+.carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 24px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}
