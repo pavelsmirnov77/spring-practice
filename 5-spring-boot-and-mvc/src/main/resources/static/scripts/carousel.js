@@ -1,23 +1,28 @@
-const carousel = document.querySelector('.carousel');
-const carouselInner = carousel.querySelector('.carousel-inner');
-const carouselItems = Array.from(carouselInner.children);
-const prevButton = carousel.querySelector('.carousel-prev');
-const nextButton = carousel.querySelector('.carousel-next');
+var slideIndex = 1;
+showSlides(slideIndex);
 
-prevButton.addEventListener('click', () => {
-    const currentItem = carousel.querySelector('.carousel-item.active');
-    const prevItem = currentItem.previousElementSibling;
-    if (prevItem) {
-        currentItem.classList.remove('active');
-        prevItem.classList.add('active');
-    }
-});
+// Next/previous controls
+function plusSlides(n) {
+    showSlides(slideIndex += n);
+}
 
-nextButton.addEventListener('click', () => {
-    const currentItem = carousel.querySelector('.carousel-item.active');
-    const nextItem = currentItem.nextElementSibling;
-    if (nextItem) {
-        currentItem.classList.remove('active');
-        nextItem.classList.add('active');
+// Thumbnail image controls
+function currentSlide(n) {
+    showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+    var i;
+    var slides = document.getElementsByClassName("mySlides");
+    var dots = document.getElementsByClassName("dot");
+    if (n > slides.length) {slideIndex = 1}
+    if (n < 1) {slideIndex = slides.length}
+    for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
     }
-});
+    for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+    }
+    slides[slideIndex-1].style.display = "block";
+    dots[slideIndex-1].className += " active";
+}
