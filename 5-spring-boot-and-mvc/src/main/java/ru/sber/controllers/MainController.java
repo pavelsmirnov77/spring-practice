@@ -10,4 +10,3 @@ public class MainController {
         return "pages/main.html";
     }
 }
-

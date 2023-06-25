@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Сайт о пиве</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="/scripts/script.js"></script>
 </head>
 <body>
@@ -28,34 +27,52 @@
 
     <section>
         <h2>Виды пива</h2>
-        <div class="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <div class="beer-type">
-                        <h3>Тёмное пиво</h3>
-                        <div class="beer-image">
-                            <img src="/images/dark_bear.png" alt="Тёмное пиво">
-                            <div class="beer-description">
-                                <p>Описание тёмного пива</p>
-                            </div>
-                        </div>
+        <div class="slideshow-container">
+
+            <div class="mySlides fade">
+                <div class="number">1 / 3</div>
+                <div class="beer-image">
+                    <img src="/images/dark_bear.png" style="width:100%">
+                    <div class="beer-description">
+                        <p>Описание тёмного пива</p>
                     </div>
                 </div>
-                <div class="carousel-item">
-                    <div class="beer-type">
-                        <h3>Белое пиво</h3>
-                        <div class="beer-image">
-                            <img src="/images/white_bear.png" alt="Белое пиво">
-                            <div class="beer-description">
-                                <p>Описание белого пива</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="text">Тёмное пиво</div>
             </div>
-            <button class="carousel-prev"><i class="fas fa-chevron-left"></i></button>
-            <button class="carousel-next"><i class="fas fa-chevron-right"></i></button>
+
+            <div class="mySlides fade">
+                <div class="number">2 / 3</div>
+                <div class="beer-image">
+                    <img src="/images/white_bear.png" style="width:100%">
+                    <div class="beer-description">
+                        <p>Описание белого пива</p>
+                    </div>
+                </div>
+                <div class="text">Белое пиво</div>
+            </div>
+
+            <div class="mySlides fade">
+                <div class="number">3 / 3</div>
+                <div class="beer-image">
+                    <img src="/images/lager.png" style="width:100%">
+                    <div class="beer-description">
+                        <p>Описание лагера</p>
+                    </div>
+                </div>
+                <div class="text">Лагер</div>
+            </div>
+
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
             <script src="/scripts/carousel.js"></script>
+        </div>
+        <br>
+
+        <!-- The dots/circles -->
+        <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
         </div>
     </section>
 
