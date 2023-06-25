@@ -1,4 +1,3 @@
-/* Общие стили */
 .fade-in {
     opacity: 0;
     transform: translateY(20px);
@@ -102,7 +101,7 @@ section {
 
 .beer-image:hover .beer-description {
     opacity: 1;
-    z-index: 1; /* Добавлено */
+    z-index: 1;
 }
 
 
@@ -122,15 +121,33 @@ footer {
     text-align: center;
 }
 
-/* carousel.css */
 .carousel {
     position: relative;
     overflow: hidden;
+    justify-content: center;
+    align-items: center;
 }
 
 .carousel-inner {
     display: flex;
-    transition: transform 0.3s ease;
+    max-width: 90%;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-item {
+    flex: 0 0 auto;
+    margin-right: 20px;
+    opacity: 0;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease;
+}
+
+.carousel-item.active {
+    opacity: 1;
+    justify-content: center;
+    align-items: center;
 }
 
 .carousel-prev,
@@ -149,15 +166,23 @@ footer {
     transition: background-color 0.3s ease;
 }
 
-.carousel-prev:hover,
-.carousel-next:hover {
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
 .carousel-prev {
-    left: 10px;
+    left: 0;
 }
 
 .carousel-next {
-    right: 10px;
+    right: 0;
+}
+
+.carousel-prev:before {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.carousel-next:before {
+    transform: translate(-50%, -50%) rotate(135deg);
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+    background-color: rgba(0, 0, 0, 0.7);
 }
