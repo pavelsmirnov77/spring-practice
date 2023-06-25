@@ -4,16 +4,16 @@ window.addEventListener('DOMContentLoaded', function() {
 
     ageConfirmButton.addEventListener('click', function() {
         ageVerificationOverlay.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Разрешить прокрутку страницы после подтверждения
+        document.body.style.overflow = 'auto';
     });
 
     ageVerificationOverlay.addEventListener('wheel', function(event) {
-        event.preventDefault(); // Предотвращаем прокрутку при прокрутке колесом мыши над оверлеем
+        event.preventDefault();
     });
 
     ageVerificationOverlay.addEventListener('touchmove', function(event) {
-        event.preventDefault(); // Предотвращаем прокрутку при касании и прокрутке на оверлее на сенсорных устройствах
+        event.preventDefault();
     });
 
-    document.body.style.overflow = 'hidden'; // Запретить прокрутку страницы при отображении оверлея
+    document.body.style.overflow = 'hidden';
 });

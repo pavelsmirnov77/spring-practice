@@ -3,6 +3,9 @@ package ru.sber;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Класс для запуска спринг-приложения
+ */
 @SpringBootApplication
 public class Application {
 
