@@ -20,7 +20,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #696565;
+    background-color: #ffffff;
 }
 
 .site-header {
@@ -175,10 +175,44 @@ section p {
 }
 
 footer {
-    background-color: #383737;
+    background-color: #343333;
+    font-family: "Play", sans-serif;
     padding: 20px;
     text-align: center;
-    color: #ffffff;
+    color: gray;
+}
+
+.footer .row{
+    width:100%;
+    margin:1% 0%;
+    padding:0.6% 0%;
+    color:gray;
+    font-size:0.8em;
+}
+
+.footer .row a{
+    text-decoration:none;
+    color:gray;
+    transition:0.5s;
+}
+
+.footer .row a:hover{
+    color:#fff;
+}
+
+.footer .row a i{
+    font-size:2em;
+    margin:0% 1%;
+}
+
+@media (max-width:720px){
+    .footer{
+        text-align:left;
+        padding:5%;
+    }
+    .footer .row a i{
+        margin:0% 3%;
+    }
 }
 
 * {box-sizing:border-box}
