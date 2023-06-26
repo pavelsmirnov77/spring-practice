@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', function() {
     confirmButton.addEventListener('click', function() {
         verificationOverlay.style.display = 'none';
         document.body.style.overflow = 'auto';
+        localStorage.setItem('cookieConfirmation', 'true');
     });
 
     nonConfirmButton.addEventListener('click', function() {
@@ -23,5 +24,12 @@ window.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
     });
 
-    document.body.style.overflow = 'hidden';
+    // Проверка состояния подтверждения при загрузке страницы
+    let isCookieConfirmed = localStorage.getItem('cookieConfirmation');
+    if (isCookieConfirmed === 'true') {
+        verificationOverlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    } else {
+        document.body.style.overflow = 'hidden';
+    }
 });
