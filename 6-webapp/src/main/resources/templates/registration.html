@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Регистрация</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Play&display=swap">
+</head>
+<body>
+<header class="site-header">
+    <div class="container">
+        <a class="logo" href="/" align="center">
+            Сытый Боб <br/>
+            <h3>Сеть пиццерий</h3>
+        </a>
+        <form action="/search" method="GET">
+            <div class="search-box">
+                <input type="text" name="searchTerm" placeholder="Поиск">
+                <button class="button" type="submit">Поиск</button>
+            </div>
+        </form>
+        <div class="buttons">
+            <a class="button" href="/registration">Регистрация</a>
+            <a class="button" href="/login">Вход</a>
+        </div>
+    </div>
+</header>
+<div class="reg-container">
+    <div class="reg-card">
+        <h2 class="reg-title">Регистрация</h2>
+        <form action="/registration" method="post">
+            <div class="form-group">
+                <label for="name">Имя</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Номер телефона</label>
+                <input type="tel" class="form-control" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Электронная почта</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Подтверждение пароля</label>
+                <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
+            </div>
+            <input type="hidden" name="_csrf" value="${_csrf.token}">
+            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        </form>
+        <div class="reg-footer">
+            Уже есть аккаунт? <a href="/login">Войти</a>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="footer">
+        <div class="row">
+            <a href="https://github.com/pavelsmirnov77"><i class="fa fa-github"></i></a>
+            <a href="#"><i class="fa fa-vk"></i></a>
+            <a href="#"><i class="fa fa-telegram"></i></a>
+        </div>
+        <div class="footer-content">
+            <p>&copy; 2023 Сеть пиццерий "Сытый Боб"</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

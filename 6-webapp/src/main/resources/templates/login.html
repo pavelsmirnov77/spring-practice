@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Авторизация</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Play&display=swap">
+</head>
+<body>
+<header class="site-header">
+    <div class="container">
+        <a class="logo" href="/" align="center">
+            Сытый Боб <br/>
+            <h3>Сеть пиццерий</h3>
+        </a>
+        <form action="/search" method="GET">
+            <div class="search-box">
+                <input type="text" name="searchTerm" placeholder="Поиск">
+                <button class="button" type="submit">Поиск</button>
+            </div>
+        </form>
+        <div class="buttons">
+            <a class="button" href="/registration">Регистрация</a>
+            <a class="button" href="/login">Вход</a>
+        </div>
+    </div>
+</header>
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">Авторизация</h2>
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="email">Имя пользователя (email)</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <input type="hidden" name="_csrf" value="${_csrf.token}">
+            <button type="submit" class="btn btn-primary">Войти</button>
+        </form>
+        <div class="auth-footer">
+            Нет аккаунта? <a href="/registration">Зарегистрироваться</a>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="footer">
+        <div class="row">
+            <a href="https://github.com/pavelsmirnov77"><i class="fa fa-github"></i></a>
+            <a href="#"><i class="fa fa-vk"></i></a>
+            <a href="#"><i class="fa fa-telegram"></i></a>
+        </div>
+        <div class="footer-content">
+            <p>&copy; 2023 Сеть пиццерий "Сытый Боб"</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
