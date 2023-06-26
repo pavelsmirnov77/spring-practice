@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Play&display=swap">
+</head>
+<body>
+<div id="verification-overlay">
+    <div id="verification-popup">
+        <h2>🍪Cookie</h2>
+        <h3>
+            Мы используем файлы cookie, чтобы улучшить работу и повысить эффективность сайта.
+            Щелкая по кнопке «Да», Вы соглашаетесь с использованием файлов cookie.
+        </h3>
+        <button id="confirm-button">Да</button>
+        <button id="non-confirm-button" class="non-confirm-button">Нет</button>
+    </div>
+    <div id="message-overlay">
+        <div id="message-box" class="message-box">
+            Извините, доступ запрещен
+        </div>
+    </div>
+    <script src="/scripts/verification.js"></script>
+</div>
+</body>
+<header class="site-header">
+    <div class="container">
+        <a class="logo" href="/" align="center">
+            Сытый Боб <br/>
+            <h3>Сеть пиццерий</h3>
+        </a>
+        <form action="/search" method="GET">
+            <input type="text" name="searchTerm" placeholder="Поиск...">
+            <button type="submit">Поиск</button>
+        </form>
+        <div class="buttons">
+            <a class="button" href="/registration">Регистрация</a>
+            <a class="button" href="/login">Вход</a>
+        </div>
+    </div>
+</header>
+<main>
+    <section id="section1" class="fade-in">
+        <h4 align="center">Акции</h4>
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+                <h3 align="center">Акция №1</h3>
+                <div class="promotion-image">
+                    <img src="/images/promotion_one.png" style="width:100%" alt="Акция №1">
+                    <div class="promotion-description">
+                        <p align="center">
+                            Скидка распространяется не на весь ассортимент продукции. Подробности акции можно узнать на кассе или по номеру телефона: 12-34-56.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="mySlides fade">
+                <h3 align="center">Акция №2</h3>
+                <div class="promotion-image">
+                    <img src="/images/promotion_two.png" style="width:100%" alt="Акция №2">
+                    <div class="promotion-description">
+                        <p align="center">
+                            Акция распространяется не на весь ассортимент продукции. Подробности акции можно узнать на кассе или по номеру телефона: 12-34-56.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="mySlides fade">
+                <h3 align="center">Акция №3</h3>
+                <div class="promotion-image">
+                    <img src="/images/promotion_three.png" style="width:100%" alt="Акция №3">
+                    <div class="promotion-description">
+                        <p align="center">
+                            Акция распространяется не на весь ассортимент продукции. Подробности акции можно узнать на кассе или по номеру телефона: 12-34-56.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            <script src="/scripts/carousel.js"></script>
+        </div>
+        <br>
+        <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </section>
+    <section id="section2" class="fade-in">
+        <h1 align="left">Пицца</h1>
+        <div class="container">
+            <div class="pizza-cards">
+                <div th:each="pizza : ${pizzas}" class="pizza-card">
+                    <img th:src="${pizza.image}" alt="Pizza Image">
+                    <h2 th:text="${pizza.name}"></h2>
+                    <p>Вес: <span th:text="${pizza.weight}"></span> г</p>
+                    <p>Размер: <span th:text="${pizza.size}"></span> см</p>
+                    <p>Цена: <span th:text="${pizza.price}"></span> руб.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer">
+        <div class="row">
+            <a href="https://github.com/pavelsmirnov77"><i class="fa fa-github"></i></a>
+            <a href="#"><i class="fa fa-vk"></i></a>
+            <a href="#"><i class="fa fa-telegram"></i></a>
+        </div>
+    <div class="footer-content">
+        <p>&copy; 2023 Сеть пиццерий "Сытый Боб"</p>
+    </div>
+    </div>
+</footer>
+</body>
+</html>
