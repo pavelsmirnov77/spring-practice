@@ -35,6 +35,9 @@ public class PizzaService implements PizzaInterfaceService {
                 searchResults.add(pizza);
             }
         }
+        if (Objects.equals(searchTerm, "")) {
+            return pizzas;
+        }
         return searchResults;
     }
 
