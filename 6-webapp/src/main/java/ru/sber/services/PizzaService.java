@@ -34,11 +34,11 @@ public class PizzaService implements PizzaInterfaceService {
     public List<Pizza> searchPizzas(String searchTerm) {
         List<Pizza> searchResults = new ArrayList<>();
         for (Pizza pizza : pizzas) {
-            if (pizza.name().equalsIgnoreCase(searchTerm)) {
+            if (pizza.name().toLowerCase().contains(searchTerm.toLowerCase())) {
                 searchResults.add(pizza);
             }
         }
-        if (Objects.equals(searchTerm, "")) {
+        if (searchTerm.isEmpty()) {
             return pizzas;
         }
         return searchResults;
