@@ -23,7 +23,7 @@ public class PizzaController {
         this.pizzaService = pizzaService;
     }
 
-    /***
+    /**
      * Возвращает в качестве ответа на запрос веб-страницу
      * @return веб-страницу страницу main.html
      */
