@@ -33,12 +33,12 @@
     </div>
 </header>
 <body>
-<h1 class="sales-info">Выбранные пиццы:</h1>
+<h1 class="sales-info fade-in">Выбранные пиццы:</h1>
 <div>
-    <p class="sales-info">Количество пицц: <span th:text="${totalQuantity}"></span></p>
-    <p class="sales-info">Общая стоимость: <span th:text="${totalPrice}"></span> руб.</p>
+    <p class="sales-info fade-in">Количество пицц: <span th:text="${totalQuantity}"></span></p>
+    <p class="sales-info fade-in">Общая стоимость: <span th:text="${totalPrice}"></span> руб.</p>
 </div>
-<ul class="sales-pizza-list">
+<ul class="sales-pizza-list fade-in">
     <li th:each="pizza, pizzaIndex : ${selectedPizzas}" class="sales-pizza-card">
         <img th:src="${pizza.image}" alt="Pizza Image">
         <div>
@@ -46,10 +46,8 @@
             <p>Вес: <span th:text="${pizza.weight}"></span> г</p>
             <p>Размер: <span th:text="${pizza.size}"></span> см</p>
             <p>Цена: <span th:text="${pizza.price}"></span> руб.</p>
-            <form th:action="@{/removePizza}" method="post">
-                <input type="hidden" name="pizzaIndex" th:value="${pizzaIndex.index}" />
-                <button class="remove-button" type="submit">Удалить товар</button>
-            </form>
+            <input type="hidden" name="pizzaIndex" th:value="${pizzaIndex.index}" />
+            <button class="remove-button" type="submit">Удалить товар</button>
         </div>
     </li>
 </ul>
