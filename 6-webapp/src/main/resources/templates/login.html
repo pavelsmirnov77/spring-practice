@@ -14,15 +14,21 @@
             Сытый Боб <br/>
             <h3>Сеть пиццерий</h3>
         </a>
-        <form action="/search" method="GET">
-            <div class="search-box">
-                <input type="text" name="searchTerm" placeholder="Поиск">
-                <button class="button" type="submit">Поиск</button>
+        <div class="header-buttons">
+            <form action="/search" method="GET">
+                <div class="search-box">
+                    <input type="text" name="searchTerm" placeholder="Поиск">
+                    <button class="button" type="submit">Поиск</button>
+                </div>
+            </form>
+            <div class="auth-buttons">
+                <a class="button" href="/registration">Регистрация</a>
+                <a class="button" href="/login">Вход</a>
             </div>
-        </form>
-        <div class="buttons">
-            <a class="button" href="/registration">Регистрация</a>
-            <a class="button" href="/login">Вход</a>
+            <a class="button cart-icon" href="/sales">
+                <i class="fa fa-shopping-cart"></i>
+                <span class="cart-quantity" th:text="${session.totalQuantity}"></span>
+            </a>
         </div>
     </div>
 </header>

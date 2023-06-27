@@ -24,7 +24,7 @@
             Извините, доступ запрещен
         </div>
     </div>
-    <script src="/scripts/verification.js"></script>
+    <script src="/scripts/cookie.js"></script>
 </div>
 </body>
 <header class="site-header">
@@ -33,13 +33,21 @@
             Сытый Боб <br/>
             <h3>Сеть пиццерий</h3>
         </a>
-        <form action="/search" method="GET">
-            <input type="text" name="searchTerm" placeholder="Поиск...">
-            <button type="submit">Поиск</button>
-        </form>
-        <div class="buttons">
-            <a class="button" href="/registration">Регистрация</a>
-            <a class="button" href="/login">Вход</a>
+        <div class="header-buttons">
+            <form action="/search" method="GET">
+                <div class="search-box">
+                    <input type="text" name="searchTerm" placeholder="Поиск">
+                    <button class="button" type="submit">Поиск</button>
+                </div>
+            </form>
+            <div class="auth-buttons">
+                <a class="button" href="/registration">Регистрация</a>
+                <a class="button" href="/login">Вход</a>
+            </div>
+            <a class="button cart-icon" href="/sales">
+                <i class="fa fa-shopping-cart"></i>
+                <span class="cart-quantity" th:text="${session.totalQuantity}"></span>
+            </a>
         </div>
     </div>
 </header>
@@ -96,11 +104,15 @@
         <div class="container">
             <div class="pizza-cards">
                 <div th:each="pizza : ${pizzas}" class="pizza-card">
-                    <img th:src="${pizza.image}" alt="Pizza Image">
+                    <img th:src="${pizza.image}" alt="Фото пиццы">
                     <h2 th:text="${pizza.name}"></h2>
                     <p>Вес: <span th:text="${pizza.weight}"></span> г</p>
                     <p>Размер: <span th:text="${pizza.size}"></span> см</p>
                     <p>Цена: <span th:text="${pizza.price}"></span> руб.</p>
+                    <form th:action="@{/sales}" method="post">
+                        <input type="hidden" name="pizzaId" th:value="${pizza.id}" />
+                        <button class="button" type="submit">Добавить</button>
+                    </form>
                 </div>
             </div>
         </div>
