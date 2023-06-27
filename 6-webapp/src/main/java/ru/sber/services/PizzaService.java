@@ -18,8 +18,11 @@ public class PizzaService implements PizzaInterfaceService {
             new Pizza(3, "Ветчина и грибы", "https://cdpiz1.pizzasoft.ru/rs/280x280/pizzafab/items/3/vetchina-i-griby-bolshaya-main_image-3472-36351.jpg", 820, 30, BigDecimal.valueOf(680)),
             new Pizza(4, "Деревенская", "https://cdpiz1.pizzasoft.ru/rs/280x280/pizzafab/items/3/derevenskaya-bolshaya-main_image-3506-42148.jpg", 800, 30, BigDecimal.valueOf(800)),
             new Pizza(5, "Барбекю", "https://cdpiz1.pizzasoft.ru/rs/280x280/pizzafab/items/7/barbekyu-bolshaya-main_image-7176-28721.jpg", 830, 30, BigDecimal.valueOf(790)),
-            new Pizza(6, "Баварская", "https://cdpiz1.pizzasoft.ru/rs/280x280/pizzafab/items/3/bavarskaya-bolshaya-main_image-3441-96931.jpg", 775, 30, BigDecimal.valueOf(850))
-    ));
+            new Pizza(6, "Баварская", "https://cdpiz1.pizzasoft.ru/rs/280x280/pizzafab/items/3/bavarskaya-bolshaya-main_image-3441-96931.jpg", 775, 30, BigDecimal.valueOf(850)),
+            new Pizza(7, "4 сыра", "https://cdpiz1.pizzasoft.ru/rs/280x280/pizzafab/items/3/4-syra-bolshaya-main_image-3416-31557.jpg", 700, 30, BigDecimal.valueOf(710)),
+            new Pizza(8, "Жюльен", "https://cdpiz1.pizzasoft.ru/rs/280x280/pizzafab/items/3/zhyulen-bolshaya-main_image-3540-75129.jpg", 780, 30, BigDecimal.valueOf(840)),
+            new Pizza(9, "С курицей и ветчиной", "https://cdpiz1.pizzasoft.ru/rs/280x280/pizzafab/items/8/picca-s-kurochkoy-i-vetchinoy-srednyaya-main_image-8587-72378.jpg", 600, 30, BigDecimal.valueOf(630))
+            ));
     private List<Pizza> selectedPizzas = new ArrayList<>();
 
     /**
