@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * Сущность платежа
+ */
 @Data
 @AllArgsConstructor
 public class Payment {

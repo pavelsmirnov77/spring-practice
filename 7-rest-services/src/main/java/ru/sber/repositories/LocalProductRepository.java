@@ -115,8 +115,4 @@ public class LocalProductRepository implements ProductRepository {
         int high = 1_000_000;
         return random.nextLong(high - low) + low;
     }
-
-    public List<Product> getAllProducts() {
-        return products;
-    }
 }

@@ -92,7 +92,7 @@ public class LocalCartRepository implements CartRepository {
     /**
      * Осуществляет оплату корзины
      * @param cartId id корзины
-     * @return true, если оплата прошла успешно, иначе false
+     * @return объект платежа
      */
     public Payment payment(long cartId) {
         Cart cart = carts.get((int) cartId - 1);
