@@ -1,6 +1,7 @@
 package ru.sber.repositories;
 
 import ru.sber.entities.Cart;
+import ru.sber.entities.Payment;
 
 public interface CartRepository {
     void addProductById(long cartId, long productId);
@@ -9,7 +10,7 @@ public interface CartRepository {
 
     boolean deleteProductFromCart(long cartId, long productId);
 
-    boolean payment(long cartId);
+    Payment payment(long cartId);
 
     Cart getCartById(long cartId);
 }

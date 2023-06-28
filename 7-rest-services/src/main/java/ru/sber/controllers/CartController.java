@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sber.entities.Cart;
+import ru.sber.entities.Payment;
 import ru.sber.repositories.CartRepository;
 
 @Slf4j
@@ -20,7 +21,7 @@ public class CartController {
 
     @PostMapping("/{cartId}/products/{productId}")
     public void addProductToCart(@PathVariable long cartId, @PathVariable long productId) {
-        log.info("Товар с id {} добавлен в корзину с кодом {}", productId, cartId);
+        log.info("Товар с id {} добавлен в корзину с id {}", productId, cartId);
         cartRepository.addProductById(cartId, productId);
     }
 
@@ -43,7 +44,7 @@ public class CartController {
     }
 
     @PostMapping("/{cartId}/payment")
-    public boolean processPayment(@PathVariable long cartId) {
+    public Payment processPayment(@PathVariable long cartId) {
         log.info("Оплата корзины с id {} прошла", cartId);
         return cartRepository.payment(cartId);
     }

@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:8081/products/Игровая
+GET localhost:8081/products?productName=
 Content-Type: application/json
 
 ###
@@ -38,20 +38,20 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:8081/clients/0
+GET localhost:8081/clients/1
 Content-Type: application/json
 
 ###
-DELETE localhost:8081/clients/0
+DELETE localhost:8081/clients/355919
 
 ###
-POST localhost:8081/carts/1/products/4
+POST localhost:8081/carts/1/products/1
 
 ###
 PUT localhost:8081/carts/1/products/3?quantity=5
 
 ###
-DELETE localhost:8081/carts/1/products/5
+DELETE localhost:8081/carts/1/products/3
 
 ###
 POST localhost:8081/carts/1/payment

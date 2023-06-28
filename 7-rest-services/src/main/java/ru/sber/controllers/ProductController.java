@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.sber.entities.ClientResponse;
 import ru.sber.entities.Product;
 import ru.sber.exceptions.ProductNotFoundException;
-import ru.sber.exceptions.UserNotFoundException;
 import ru.sber.repositories.ProductRepository;
 
 import java.util.List;
@@ -32,8 +30,8 @@ public class ProductController {
         return productRepository.createProduct(product);
     }
 
-    @GetMapping("/{productName}")
-    public ResponseEntity<?> getProducts(@PathVariable String productName) {
+    @GetMapping
+    public ResponseEntity<?> getProducts(@RequestParam String productName) {
         try {
             log.info("Поиск товара по названию: {}", productName);
             List<Product> product = productRepository.findProductByName(productName);

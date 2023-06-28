@@ -1,6 +1,7 @@
 package ru.sber.repositories;
 
 import org.springframework.stereotype.Repository;
+import ru.sber.entities.Cart;
 import ru.sber.entities.Client;
 import ru.sber.entities.ClientResponse;
 import ru.sber.exceptions.UserNotFoundException;
@@ -16,13 +17,13 @@ import java.util.Random;
 @Repository
 public class LocalClientRepository implements ClientRepository {
 
-    private final LocalCartRepository localCartRepository;
     private List<Client> clients;
 
     public LocalClientRepository(LocalCartRepository localCartRepository) {
-        this.localCartRepository = localCartRepository;
         this.clients = new ArrayList<>(List.of(
-                new Client(0, "Павел", "pavelsmir", "89uip12", "pavel@yandex.ru", localCartRepository.getCartById(1))
+                new Client(1, "Павел", "pavelsmir",
+                        "89uip12", "pavel@yandex.ru",
+                        localCartRepository.getCartById(1))
         ));
     }
 
@@ -36,6 +37,7 @@ public class LocalClientRepository implements ClientRepository {
         long id = generateId();
         client.setId(id);
         clients.add(client);
+        client.setCart(new Cart(generateId(), null, null));
 
         return id;
     }
@@ -59,8 +61,6 @@ public class LocalClientRepository implements ClientRepository {
         }
     }
 
-
-
     /**
      * Удаляет клиента оп id
      * @param clientId id клиента
@@ -69,15 +69,6 @@ public class LocalClientRepository implements ClientRepository {
     @Override
     public boolean deleteClientById(long clientId) {
         return clients.removeIf(client -> client.getId() == clientId);
-    }
-
-    /**
-     * Вовзращает список всех клиентов
-     * @return список всех клиентов
-     */
-    @Override
-    public List<Client> findAll() {
-        return clients;
     }
 
     /**

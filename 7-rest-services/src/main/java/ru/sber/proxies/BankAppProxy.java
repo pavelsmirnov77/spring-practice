@@ -16,7 +16,7 @@ public class BankAppProxy implements BankAppInterfaceProxy {
 
     public BankAppProxy() {
         this.clientsBank = new ArrayList<>(List.of(
-                new ClientBank(0, BigDecimal.valueOf(10000))
+                new ClientBank(1, BigDecimal.valueOf(1000000))
         ));
     }
 
@@ -33,5 +33,14 @@ public class BankAppProxy implements BankAppInterfaceProxy {
             }
         }
         return BigDecimal.ZERO;
+    }
+
+    @Override
+    public void setBalanceClient(long clientId, BigDecimal newBalance) {
+        for (ClientBank clientBank : clientsBank) {
+            if (clientBank.getClientId() == clientId) {
+                clientBank.setBalance(newBalance);
+            }
+        }
     }
 }
