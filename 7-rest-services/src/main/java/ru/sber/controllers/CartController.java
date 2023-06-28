@@ -19,9 +19,9 @@ public class CartController {
     }
 
     @PostMapping("/{cartId}/products/{productId}")
-    public boolean addProductToCart(@PathVariable long cartId, @PathVariable long productId) {
+    public void addProductToCart(@PathVariable long cartId, @PathVariable long productId) {
         log.info("Товар с id {} добавлен в корзину с кодом {}", productId, cartId);
-        return cartRepository.addProductById(cartId, productId);
+        cartRepository.addProductById(cartId, productId);
     }
 
     @PutMapping("/{cartId}/products/{productId}")

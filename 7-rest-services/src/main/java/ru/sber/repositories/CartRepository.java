@@ -3,7 +3,7 @@ package ru.sber.repositories;
 import ru.sber.entities.Cart;
 
 public interface CartRepository {
-    boolean addProductById(long cartId, long productId);
+    void addProductById(long cartId, long productId);
 
     boolean changeQuantity(long cartId, long productId, long quantity);
 

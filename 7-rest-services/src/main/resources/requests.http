@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:8081/products
+GET localhost:8081/products/Игровая
 Content-Type: application/json
 
 ###
@@ -31,27 +31,10 @@ POST localhost:8081/clients
 Content-Type: application/json
 
 {
-  "id": 2,
   "name": "Иван",
   "login": "ivan123",
   "password": "qwerty",
-  "email": "ivan@yandex.ru",
-  "cart": {
-    "id": 3,
-    "products": [
-      {
-        "id": 1,
-        "name": "Термокружка",
-        "price": 350.00
-      },
-      {
-        "id": 2,
-        "name": "Гантели",
-        "price": 1200.00
-      }
-    ],
-    "promo": "SUM39"
-  }
+  "email": "ivan@yandex.ru"
 }
 
 ###

@@ -1,7 +1,9 @@
 package ru.sber.repositories;
 
 import org.springframework.stereotype.Repository;
+import ru.sber.entities.Client;
 import ru.sber.entities.Product;
+import ru.sber.exceptions.ProductNotFoundException;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -73,10 +75,17 @@ public class LocalProductRepository implements ProductRepository {
         if (productName == null) {
             return products;
         }
-
-        return products.stream()
-                .filter(product -> product.getName().equals(productName))
+        List<Product> foundProducts = products.stream()
+                .filter(product -> product.getName()
+                        .toLowerCase()
+                        .contains(productName.toLowerCase()))
                 .toList();
+
+        if (foundProducts.isEmpty()) {
+            throw new ProductNotFoundException("Продукт с именем " + productName + " не найден");
+        }
+
+        return foundProducts;
     }
 
     /**
@@ -86,7 +95,15 @@ public class LocalProductRepository implements ProductRepository {
      */
     @Override
     public Product getProductById(long productId) {
-        return products.get((int) productId);
+        Optional<Product> productOptional = products.stream()
+                .filter(product -> product.getId() == productId)
+                .findFirst();
+        if (productOptional.isPresent()) {
+            return products.get((int) productId);
+        }
+        else {
+            throw new ProductNotFoundException("Продукт с id " + productId + "не найден");
+        }
     }
 
     /**

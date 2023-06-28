@@ -3,9 +3,11 @@ package ru.sber.repositories;
 import org.springframework.stereotype.Repository;
 import ru.sber.entities.Client;
 import ru.sber.entities.ClientResponse;
+import ru.sber.exceptions.UserNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -45,9 +47,19 @@ public class LocalClientRepository implements ClientRepository {
      */
     @Override
     public ClientResponse getClientResponseById(long clientResponseId) {
-        Client client = clients.get((int) clientResponseId);
-        return new ClientResponse(client.getId(), client.getName(), client.getCart());
+        Optional<Client> clientOptional = clients.stream()
+                .filter(client -> client.getId() == clientResponseId)
+                .findFirst();
+
+        if (clientOptional.isPresent()) {
+            Client client = clientOptional.get();
+            return new ClientResponse(client.getId(), client.getName(), client.getCart());
+        } else {
+            throw new UserNotFoundException("Пользователь с id: " + clientResponseId + "не найден");
+        }
     }
+
+
 
     /**
      * Удаляет клиента оп id

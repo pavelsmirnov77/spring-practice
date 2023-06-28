@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sber.entities.Client;
 import ru.sber.entities.ClientResponse;
+import ru.sber.exceptions.UserNotFoundException;
 import ru.sber.repositories.ClientRepository;
 
 @Slf4j
@@ -28,9 +29,14 @@ public class ClientController {
     }
 
     @GetMapping("/{clientId}")
-    public ClientResponse getClientResponseById(@PathVariable long clientId) {
-        log.info("Клиент с id {} получен", clientId);
-        return clientRepository.getClientResponseById(clientId);
+    public ResponseEntity<ClientResponse> getClientResponseById(@PathVariable long clientId) {
+        try {
+            log.info("Клиент с id {} получен", clientId);
+            ClientResponse clientResponse = clientRepository.getClientResponseById(clientId);
+            return ResponseEntity.ok(clientResponse);
+        } catch (UserNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

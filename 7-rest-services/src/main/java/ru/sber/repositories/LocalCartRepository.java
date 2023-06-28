@@ -50,14 +50,9 @@ public class LocalCartRepository implements CartRepository {
      * @return true, если успешно добавлено, иначе false
      */
     @Override
-    public boolean addProductById(long cartId, long productId) {
+    public void addProductById(long cartId, long productId) {
         Cart cart = carts.get((int) cartId);
-        if (cart == null) {
-            return false;
-        }
-
         cart.getProducts().add(localProductRepository.getProductById(productId));
-        return true;
     }
 
     /**

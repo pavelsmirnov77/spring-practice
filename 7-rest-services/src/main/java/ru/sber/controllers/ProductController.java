@@ -4,7 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.sber.entities.ClientResponse;
 import ru.sber.entities.Product;
+import ru.sber.exceptions.ProductNotFoundException;
+import ru.sber.exceptions.UserNotFoundException;
 import ru.sber.repositories.ProductRepository;
 
 import java.util.List;
@@ -28,11 +31,15 @@ public class ProductController {
         return productRepository.createProduct(product);
     }
 
-    @GetMapping
-    public List<Product> getProducts(@RequestParam(required = false) String productName) {
-        log.info("Поиск товара по названию: {}", productName);
-
-        return productRepository.findProductByName(productName);
+    @GetMapping("/{productName}")
+    public ResponseEntity<List<Product>> getProducts(@PathVariable String productName) {
+        try {
+            log.info("Поиск товара по названию: {}", productName);
+            List<Product> product = productRepository.findProductByName(productName);
+            return ResponseEntity.ok().body(product);
+        } catch (ProductNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping
