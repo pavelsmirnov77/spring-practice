@@ -35,6 +35,11 @@ public class BankAppProxy implements BankAppInterfaceProxy {
         return BigDecimal.ZERO;
     }
 
+    /**
+     * Обновляет значение баланса клиента
+     * @param clientId id клиента
+     * @param newBalance новое значение баланса
+     */
     @Override
     public void setBalanceClient(long clientId, BigDecimal newBalance) {
         for (ClientBank clientBank : clientsBank) {
@@ -42,5 +47,9 @@ public class BankAppProxy implements BankAppInterfaceProxy {
                 clientBank.setBalance(newBalance);
             }
         }
+    }
+
+    public List<ClientBank> getAllClients() {
+        return clientsBank;
     }
 }

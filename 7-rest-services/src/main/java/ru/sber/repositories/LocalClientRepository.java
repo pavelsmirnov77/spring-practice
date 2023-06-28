@@ -1,11 +1,12 @@
 package ru.sber.repositories;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.sber.entities.Cart;
-import ru.sber.entities.Client;
-import ru.sber.entities.ClientResponse;
+import ru.sber.entities.*;
 import ru.sber.exceptions.UserNotFoundException;
+import ru.sber.proxies.BankAppProxy;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,15 +17,22 @@ import java.util.Random;
  */
 @Repository
 public class LocalClientRepository implements ClientRepository {
-
+    private LocalCartRepository localCartRepository;
+    @Autowired
+    private CartRepository cartRepository;
     private List<Client> clients;
 
-    public LocalClientRepository(LocalCartRepository localCartRepository) {
+    private List<Cart> carts;
+    private final BankAppProxy bankAppProxy;
+
+    public LocalClientRepository(LocalCartRepository localCartRepository, BankAppProxy bankAppProxy) {
         this.clients = new ArrayList<>(List.of(
                 new Client(1, "Павел", "pavelsmir",
                         "89uip12", "pavel@yandex.ru",
                         localCartRepository.getCartById(1))
         ));
+        this.carts = localCartRepository.getAllCarts();
+        this.bankAppProxy = bankAppProxy;
     }
 
     /**
@@ -35,9 +43,11 @@ public class LocalClientRepository implements ClientRepository {
     @Override
     public long registrationClient(Client client) {
         long id = generateId();
+        Cart cart = new Cart(generateId(), new ArrayList<>(), "");
         client.setId(id);
+        client.setCart(cart);
         clients.add(client);
-        client.setCart(new Cart(generateId(), null, null));
+        bankAppProxy.getAllClients().add(new ClientBank(id, BigDecimal.valueOf(100000)));
 
         return id;
     }

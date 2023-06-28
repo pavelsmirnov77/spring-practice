@@ -39,7 +39,8 @@ public class LocalCartRepository implements CartRepository {
                 )), "F829P")
         ));
         this.clients = new ArrayList<>(List.of(
-                new Client(1, "Павел", "pavelsmir", "89uip12", "pavel@yandex.ru", carts.get(0))
+                new Client(1, "Павел", "pavelsmir",
+                        "89uip12", "pavel@yandex.ru", carts.get(0))
         ));
         this.bankApp = bankApp;
     }
@@ -95,7 +96,7 @@ public class LocalCartRepository implements CartRepository {
      * @return объект платежа
      */
     public Payment payment(long cartId) {
-        Cart cart = carts.get((int) cartId - 1);
+        Cart cart = carts.get((int) cartId);
         BigDecimal amountBuy = BigDecimal.ZERO;
 
         if (cart == null) {
@@ -160,5 +161,9 @@ public class LocalCartRepository implements CartRepository {
     @Override
     public Cart getCartById(long cartId) {
         return carts.get((int) cartId - 1);
+    }
+
+    public List<Cart> getAllCarts() {
+        return carts;
     }
 }

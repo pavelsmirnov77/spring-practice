@@ -45,7 +45,7 @@ Content-Type: application/json
 DELETE localhost:8081/clients/355919
 
 ###
-POST localhost:8081/carts/1/products/1
+POST localhost:8081/carts/1/products/3
 
 ###
 PUT localhost:8081/carts/1/products/3?quantity=5
