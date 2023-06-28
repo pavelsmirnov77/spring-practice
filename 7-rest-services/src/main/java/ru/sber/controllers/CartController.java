@@ -20,11 +20,13 @@ public class CartController {
 
     @PostMapping("/{cartId}/products/{productId}")
     public boolean addProductToCart(@PathVariable long cartId, @PathVariable long productId) {
+        log.info("Товар с id {} добавлен в корзину с кодом {}", productId, cartId);
         return cartRepository.addProductById(cartId, productId);
     }
 
     @PutMapping("/{cartId}/products/{productId}")
     public boolean changeProductQuantity(@PathVariable long cartId, @PathVariable long productId, @RequestParam long quantity) {
+        log.info("У товара с id {} в корзине с id {} изменено количество на значение {}", productId, cartId, quantity);
         return cartRepository.changeQuantity(cartId, productId, quantity);
     }
 
@@ -33,6 +35,7 @@ public class CartController {
         boolean isDeleted = cartRepository.deleteProductFromCart(cartId, productId);
 
         if (isDeleted) {
+            log.info("Товар с id {} удален из корзины с id {}", productId, cartId);
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -41,11 +44,13 @@ public class CartController {
 
     @PostMapping("/{cartId}/payment")
     public boolean processPayment(@PathVariable long cartId) {
+        log.info("Оплата корзины с id {} прошла", cartId);
         return cartRepository.payment(cartId);
     }
 
     @GetMapping("/{cartId}")
     public Cart getCartById(@PathVariable long cartId) {
+        log.info("Корзина с кодом {} получена", cartId);
         return cartRepository.getCartById(cartId);
     }
 }

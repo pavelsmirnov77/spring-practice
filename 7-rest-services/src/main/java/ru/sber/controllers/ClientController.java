@@ -8,9 +8,6 @@ import ru.sber.entities.Client;
 import ru.sber.entities.ClientResponse;
 import ru.sber.repositories.ClientRepository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Slf4j
 @RestController
 @RequestMapping("clients")
@@ -32,6 +29,7 @@ public class ClientController {
 
     @GetMapping("/{clientId}")
     public ClientResponse getClientResponseById(@PathVariable long clientId) {
+        log.info("Клиент с id {} получен", clientId);
         return clientRepository.getClientResponseById(clientId);
     }
 
@@ -40,8 +38,10 @@ public class ClientController {
         boolean isDeleted = clientRepository.deleteClientById(id);
 
         if (isDeleted) {
+            log.info("Товар с id {} удалён", id);
             return ResponseEntity.noContent().build();
         } else {
+            log.info("Товар с id {} не найден", id);
             return ResponseEntity.notFound().build();
         }
     }

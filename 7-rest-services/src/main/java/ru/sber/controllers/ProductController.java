@@ -23,20 +23,21 @@ public class ProductController {
 
     @PostMapping
     public long addProduct(@RequestBody Product product) {
-        log.info("Добавление продукта {}", product);
+        log.info("Добавление товара {}", product);
 
         return productRepository.createProduct(product);
     }
 
     @GetMapping
     public List<Product> getProducts(@RequestParam(required = false) String productName) {
-        log.info("Поиск продуктов по имени {}", productName);
+        log.info("Поиск товара по названию: {}", productName);
 
         return productRepository.findProductByName(productName);
     }
 
     @PutMapping
     public Product updateProduct(@RequestBody Product product) {
+        log.info("Обновление продукта: {}", product);
         productRepository.changeProduct(product);
 
         return product;
@@ -47,8 +48,10 @@ public class ProductController {
         boolean isDeleted = productRepository.deleteProductById(id);
 
         if (isDeleted) {
+            log.info("Удаление товара с id {} прошло успешно", id);
             return ResponseEntity.noContent().build();
         } else {
+            log.info("Товар с id {} не найден", id);
             return ResponseEntity.notFound().build();
         }
     }
