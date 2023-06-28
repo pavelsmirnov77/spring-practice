@@ -2,6 +2,7 @@ package ru.sber.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sber.entities.ClientResponse;
@@ -32,15 +33,16 @@ public class ProductController {
     }
 
     @GetMapping("/{productName}")
-    public ResponseEntity<List<Product>> getProducts(@PathVariable String productName) {
+    public ResponseEntity<?> getProducts(@PathVariable String productName) {
         try {
             log.info("Поиск товара по названию: {}", productName);
             List<Product> product = productRepository.findProductByName(productName);
             return ResponseEntity.ok().body(product);
         } catch (ProductNotFoundException ex) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
+
 
     @PutMapping
     public Product updateProduct(@RequestBody Product product) {

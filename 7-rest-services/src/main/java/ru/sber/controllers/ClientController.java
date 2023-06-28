@@ -2,6 +2,7 @@ package ru.sber.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sber.entities.Client;
@@ -29,13 +30,13 @@ public class ClientController {
     }
 
     @GetMapping("/{clientId}")
-    public ResponseEntity<ClientResponse> getClientResponseById(@PathVariable long clientId) {
+    public ResponseEntity<?> getClientResponseById(@PathVariable long clientId) {
         try {
             log.info("Клиент с id {} получен", clientId);
             ClientResponse clientResponse = clientRepository.getClientResponseById(clientId);
             return ResponseEntity.ok(clientResponse);
         } catch (UserNotFoundException ex) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
 

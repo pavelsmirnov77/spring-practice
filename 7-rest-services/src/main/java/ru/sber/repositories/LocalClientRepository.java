@@ -55,7 +55,7 @@ public class LocalClientRepository implements ClientRepository {
             Client client = clientOptional.get();
             return new ClientResponse(client.getId(), client.getName(), client.getCart());
         } else {
-            throw new UserNotFoundException("Пользователь с id: " + clientResponseId + "не найден");
+            throw new UserNotFoundException("Пользователь с id: " + clientResponseId + " не найден");
         }
     }
 
