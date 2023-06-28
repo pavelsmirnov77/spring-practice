@@ -1,0 +1,78 @@
+###
+POST localhost:8081/products
+Content-Type: application/json
+
+{
+  "name": "Подушка",
+  "price": 500.00,
+  "quantity": 15
+}
+
+###
+GET localhost:8081/products
+Content-Type: application/json
+
+###
+PUT localhost:8081/products
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Спальный мешок",
+  "price": 800.00,
+  "quantity": 15
+}
+
+###
+DELETE localhost:8081/products/2
+
+###
+POST localhost:8081/clients
+Content-Type: application/json
+
+{
+  "id": 2,
+  "name": "Иван",
+  "login": "ivan123",
+  "password": "qwerty",
+  "email": "ivan@yandex.ru",
+  "cart": {
+    "id": 3,
+    "products": [
+      {
+        "id": 1,
+        "name": "Термокружка",
+        "price": 350.00
+      },
+      {
+        "id": 2,
+        "name": "Гантели",
+        "price": 1200.00
+      }
+    ],
+    "promo": "SUM39"
+  }
+}
+
+###
+GET localhost:8081/clients/0
+Content-Type: application/json
+
+###
+DELETE localhost:8081/clients/0
+
+###
+POST localhost:8081/carts/1/products/4
+
+###
+PUT localhost:8081/carts/1/products/3?quantity=5
+
+###
+DELETE localhost:8081/carts/1/products/5
+
+###
+POST localhost:8081/carts/1/payment
+
+###
+GET localhost:8081/carts/1
+Content-Type: application/json
