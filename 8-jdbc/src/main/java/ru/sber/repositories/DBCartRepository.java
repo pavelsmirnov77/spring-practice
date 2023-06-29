@@ -23,7 +23,7 @@ public class DBCartRepository implements CartRepository {
 
     @Override
     public void addProductById(long cartId, long productId) {
-        var selectProductSql = """ 
+        var selectCountClientProductSql = """ 
             SELECT count FROM products_smirnov_pa.product_client 
             WHERE id_product = ? 
             AND id_cart = ?
@@ -45,30 +45,30 @@ public class DBCartRepository implements CartRepository {
             """;
 
         try (var connection = DriverManager.getConnection(JDBC);
-             var selectStatement = connection.prepareStatement(selectProductSql);
-             var insertStatement = connection.prepareStatement(insertProductSql);
-             var updateStatement = connection.prepareStatement(updateCountClientProductSql);
-             var updateCountStatement = connection.prepareStatement(updateCountProductSql)) {
+             var selectCountClientStatement = connection.prepareStatement(selectCountClientProductSql);
+             var insertProductStatement = connection.prepareStatement(insertProductSql);
+             var updateCountClientProductStatement = connection.prepareStatement(updateCountClientProductSql);
+             var updateCountProductStatement = connection.prepareStatement(updateCountProductSql)) {
 
-            selectStatement.setLong(1, productId);
-            selectStatement.setLong(2, cartId);
-            ResultSet resultSet = selectStatement.executeQuery();
+            selectCountClientStatement.setLong(1, productId);
+            selectCountClientStatement.setLong(2, cartId);
+            ResultSet resultSet = selectCountClientStatement.executeQuery();
 
             if (resultSet.next()) {
                 int count = resultSet.getInt("count");
                 if (count > 0) {
-                    updateStatement.setLong(1, productId);
-                    updateStatement.setLong(2, cartId);
-                    updateStatement.executeUpdate();
+                    updateCountClientProductStatement.setLong(1, productId);
+                    updateCountClientProductStatement.setLong(2, cartId);
+                    updateCountClientProductStatement.executeUpdate();
                 }
             } else {
-                insertStatement.setLong(1, productId);
-                insertStatement.setLong(2, cartId);
-                insertStatement.executeUpdate();
+                insertProductStatement.setLong(1, productId);
+                insertProductStatement.setLong(2, cartId);
+                insertProductStatement.executeUpdate();
             }
 
-            updateCountStatement.setLong(1, productId);
-            updateCountStatement.executeUpdate();
+            updateCountProductStatement.setLong(1, productId);
+            updateCountProductStatement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -86,12 +86,12 @@ public class DBCartRepository implements CartRepository {
                 """;
 
         try (var connection = DriverManager.getConnection(JDBC);
-             var updateStatement = connection.prepareStatement(updateQuantitySql)) {
+             var updateQuantityStatement = connection.prepareStatement(updateQuantitySql)) {
 
-            updateStatement.setLong(1, quantity);
-            updateStatement.setLong(2, productId);
-            updateStatement.setLong(3, cartId);
-            int rowsAffected = updateStatement.executeUpdate();
+            updateQuantityStatement.setLong(1, quantity);
+            updateQuantityStatement.setLong(2, productId);
+            updateQuantityStatement.setLong(3, cartId);
+            int rowsAffected = updateQuantityStatement.executeUpdate();
 
             return rowsAffected > 0;
 
@@ -109,11 +109,11 @@ public class DBCartRepository implements CartRepository {
                 """;
 
         try (var connection = DriverManager.getConnection(JDBC);
-             var deleteStatement = connection.prepareStatement(deleteProductSql)) {
+             var deleteProductStatement = connection.prepareStatement(deleteProductSql)) {
 
-            deleteStatement.setLong(1, productId);
-            deleteStatement.setLong(2, cartId);
-            int rowsAffected = deleteStatement.executeUpdate();
+            deleteProductStatement.setLong(1, productId);
+            deleteProductStatement.setLong(2, cartId);
+            int rowsAffected = deleteProductStatement.executeUpdate();
 
             return rowsAffected > 0;
 
@@ -124,7 +124,7 @@ public class DBCartRepository implements CartRepository {
 
     @Override
     public Optional<Payment> payment(long cartId) {
-        var selectCartSql = """
+        var selectCartCartSql = """
                 SELECT id, promocode FROM products_smirnov_pa.cart 
                 WHERE id = ?
                 """;
@@ -145,20 +145,20 @@ public class DBCartRepository implements CartRepository {
                 """;
 
         try (var connection = DriverManager.getConnection(JDBC);
-             var cartStatement = connection.prepareStatement(selectCartSql);
-             var productsStatement = connection.prepareStatement(selectProductsSql)) {
+             var selectCartStatement = connection.prepareStatement(selectCartCartSql);
+             var selectProductsStatement = connection.prepareStatement(selectProductsSql)) {
 
             connection.setAutoCommit(false);
 
-            cartStatement.setLong(1, cartId);
-            ResultSet cartResultSet = cartStatement.executeQuery();
+            selectCartStatement.setLong(1, cartId);
+            ResultSet cartResultSet = selectCartStatement.executeQuery();
 
             if (!cartResultSet.next()) {
                 return Optional.empty();
             }
 
-            productsStatement.setLong(1, cartId);
-            ResultSet productsResultSet = productsStatement.executeQuery();
+            selectProductsStatement.setLong(1, cartId);
+            ResultSet productsResultSet = selectProductsStatement.executeQuery();
 
             BigDecimal totalCost = BigDecimal.ZERO;
 
@@ -211,7 +211,7 @@ public class DBCartRepository implements CartRepository {
                 FROM products_smirnov_pa.cart 
                 WHERE id = ?
                 """;
-        var selectProductsSql = """
+        var selectClientProductsSql = """
                 SELECT pc.id_product, pc.count, p.name, p.price 
                 FROM products_smirnov_pa.product_client pc 
                 JOIN products_smirnov_pa.product p 
@@ -221,7 +221,7 @@ public class DBCartRepository implements CartRepository {
 
         try (var connection = DriverManager.getConnection(JDBC);
              var cartStatement = connection.prepareStatement(selectCartSql);
-             var productsStatement = connection.prepareStatement(selectProductsSql)) {
+             var productsClientStatement = connection.prepareStatement(selectClientProductsSql)) {
 
             cartStatement.setLong(1, cartId);
             ResultSet cartResultSet = cartStatement.executeQuery();
@@ -230,8 +230,8 @@ public class DBCartRepository implements CartRepository {
                 String promocode = cartResultSet.getString("promocode");
                 Cart cart = new Cart(cartId, new ArrayList<>(), promocode);
 
-                productsStatement.setLong(1, cartId);
-                ResultSet productsResultSet = productsStatement.executeQuery();
+                productsClientStatement.setLong(1, cartId);
+                ResultSet productsResultSet = productsClientStatement.executeQuery();
 
                 while (productsResultSet.next()) {
                     long productId = productsResultSet.getLong("id_product");
@@ -254,15 +254,15 @@ public class DBCartRepository implements CartRepository {
     }
 
     private long getClientIdByCartId(long cartId) throws SQLException {
-        var selectClientSql = """
+        var selectCartIdClientSql = """
                 SELECT cart_id FROM products_smirnov_pa.client 
                 WHERE cart_id = ?
                 """;
 
         try (var connection = DriverManager.getConnection(JDBC);
-             var clientStatement = connection.prepareStatement(selectClientSql)) {
-            clientStatement.setLong(1, cartId);
-            ResultSet clientResultSet = clientStatement.executeQuery();
+             var selectCartIdClientStatement = connection.prepareStatement(selectCartIdClientSql)) {
+            selectCartIdClientStatement.setLong(1, cartId);
+            ResultSet clientResultSet = selectCartIdClientStatement.executeQuery();
 
             if (clientResultSet.next()) {
                 return clientResultSet.getLong("cart_id");

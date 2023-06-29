@@ -83,7 +83,8 @@ public class DBClientRepository implements ClientRepository {
         var selectClientSql = """
                 SELECT id, name, cart_id 
                 FROM products_smirnov_pa.client 
-                WHERE id = ?""";
+                WHERE id = ?
+                """;
         var selectCartSql = """
                 SELECT id, promocode 
                 FROM products_smirnov_pa.cart 

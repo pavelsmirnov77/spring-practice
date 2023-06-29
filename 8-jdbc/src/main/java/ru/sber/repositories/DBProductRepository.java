@@ -21,18 +21,18 @@ public class DBProductRepository implements ProductRepository {
 
     @Override
     public long createProduct(Product product) {
-        var insertSql = """
+        var insertProductSql = """
                 INSERT INTO products_smirnov_pa.product (name, price, count) 
                 VALUES (?,?,?);
                 """;
         try (var connection = DriverManager.getConnection(JDBC);
-             var prepareStatement = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-            prepareStatement.setString(1, product.getName());
-            prepareStatement.setDouble(2, product.getPrice().doubleValue());
-            prepareStatement.setLong(3, product.getQuantity());
-            prepareStatement.executeUpdate();
+             var prepareInsertProductStatement = connection.prepareStatement(insertProductSql, Statement.RETURN_GENERATED_KEYS)) {
+            prepareInsertProductStatement.setString(1, product.getName());
+            prepareInsertProductStatement.setDouble(2, product.getPrice().doubleValue());
+            prepareInsertProductStatement.setLong(3, product.getQuantity());
+            prepareInsertProductStatement.executeUpdate();
 
-            ResultSet rs = prepareStatement.getGeneratedKeys();
+            ResultSet rs = prepareInsertProductStatement.getGeneratedKeys();
             if (rs.next()) {
                 return rs.getInt(1);
             } else {
@@ -45,7 +45,7 @@ public class DBProductRepository implements ProductRepository {
 
     @Override
     public boolean changeProduct(Product product) {
-        var selectSql = """
+        var updateProductSql = """
                 UPDATE products_smirnov_pa.product
                 SET 
                 name = ?,
@@ -55,13 +55,13 @@ public class DBProductRepository implements ProductRepository {
                 """;
 
         try (var connection = DriverManager.getConnection(JDBC);
-             var prepareStatement = connection.prepareStatement(selectSql)) {
-            prepareStatement.setString(1, product.getName());
-            prepareStatement.setDouble(2, product.getPrice().doubleValue());
-            prepareStatement.setLong(3, product.getQuantity());
-            prepareStatement.setLong(4, product.getId());
+             var prepareUpdateProductStatement = connection.prepareStatement(updateProductSql)) {
+            prepareUpdateProductStatement.setString(1, product.getName());
+            prepareUpdateProductStatement.setDouble(2, product.getPrice().doubleValue());
+            prepareUpdateProductStatement.setLong(3, product.getQuantity());
+            prepareUpdateProductStatement.setLong(4, product.getId());
 
-            var rows = prepareStatement.executeUpdate();
+            var rows = prepareUpdateProductStatement.executeUpdate();
 
             return rows > 0;
         } catch (SQLException e) {
@@ -71,15 +71,15 @@ public class DBProductRepository implements ProductRepository {
 
     @Override
     public boolean deleteProductById(long productId) {
-        var selectSql = """
+        var deleteProductSql = """
                 DELETE FROM products_smirnov_pa.product 
                 WHERE id = ?""";
 
         try (var connection = DriverManager.getConnection(JDBC);
-             var prepareStatement = connection.prepareStatement(selectSql)) {
-            prepareStatement.setLong(1, productId);
+             var prepareDeleteProductStatement = connection.prepareStatement(deleteProductSql)) {
+            prepareDeleteProductStatement.setLong(1, productId);
 
-            var rows = prepareStatement.executeUpdate();
+            var rows = prepareDeleteProductStatement.executeUpdate();
 
             return rows > 0;
         } catch (SQLException e) {
@@ -89,17 +89,17 @@ public class DBProductRepository implements ProductRepository {
 
     @Override
     public List<Product> findProductByName(String productName) {
-        var selectSql = """
+        var selectProductsSql = """
                 SELECT * FROM products_smirnov_pa.product 
                 WHERE name like ?
                 """;
         List<Product> products = new ArrayList<>();
 
         try (var connection = DriverManager.getConnection(JDBC);
-             var prepareStatement = connection.prepareStatement(selectSql)) {
-            prepareStatement.setString(1, "%" + (productName == null ? "" : productName) + "%");
+             var prepareSelectProductsSqlStatement = connection.prepareStatement(selectProductsSql)) {
+            prepareSelectProductsSqlStatement.setString(1, "%" + (productName == null ? "" : productName) + "%");
 
-            var resultSet = prepareStatement.executeQuery();
+            var resultSet = prepareSelectProductsSqlStatement.executeQuery();
 
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
@@ -120,16 +120,16 @@ public class DBProductRepository implements ProductRepository {
 
     @Override
     public Optional<Product> getProductById(long productId) {
-        var selectSql = """
+        var selectProductsSql = """
                 SELECT * FROM products_smirnov_pa.product 
                 WHERE id = ?
                 """;
 
         try (var connection = DriverManager.getConnection(JDBC);
-             var prepareStatement = connection.prepareStatement(selectSql)) {
-            prepareStatement.setLong(1, productId);
+             var prepareSelectProductsStatement = connection.prepareStatement(selectProductsSql)) {
+            prepareSelectProductsStatement.setLong(1, productId);
 
-            var resultSet = prepareStatement.executeQuery();
+            var resultSet = prepareSelectProductsStatement.executeQuery();
 
             if (resultSet.next()) {
                 int id = resultSet.getInt("id");

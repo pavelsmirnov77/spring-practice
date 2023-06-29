@@ -35,7 +35,6 @@ public class DBBankAppProxy implements BankAppInterfaceProxy {
         }
     }
 
-
     @Override
     public void setBalanceClient(long clientId, BigDecimal newBalance) {
         var updateBalanceSql = """
