@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ru.sber.aspects.NotEmpty;
 import ru.sber.models.Animals;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
