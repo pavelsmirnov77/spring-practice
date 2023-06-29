@@ -17,7 +17,7 @@ public class ArgumentsService {
     private Logger logger = Logger.getLogger(ArgumentsService.class.getName());
 
     List<Animals> animalsList = List.of(
-            new Animals("Собака", "Бобик", 5),
+            new Animals("Собака", "Тузик", 5),
             new Animals("Кот", "Тима", 10),
             new Animals("Попугай", "Цыпа", 7)
     );
