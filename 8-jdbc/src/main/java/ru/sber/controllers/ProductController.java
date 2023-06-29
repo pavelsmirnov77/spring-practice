@@ -9,6 +9,7 @@ import ru.sber.entities.Product;
 import ru.sber.exceptions.ProductNotFoundException;
 import ru.sber.repositories.ProductRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,7 +38,7 @@ public class ProductController {
     public ResponseEntity<?> getProduct(@RequestParam String productName) {
         try {
             log.info("Поиск товара по названию: {}", productName);
-            Optional<Product> product = productRepository.findProductByName(productName);
+            List<Product> product = productRepository.findProductByName(productName);
             return ResponseEntity.ok().body(product);
         } catch (ProductNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());

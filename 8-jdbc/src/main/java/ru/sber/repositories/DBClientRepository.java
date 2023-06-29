@@ -45,6 +45,7 @@ public class DBClientRepository implements ClientRepository {
 
             ResultSet cartKeys = prepareCartStatement.getGeneratedKeys();
             long cartId;
+
             if (cartKeys.next()) {
                 cartId = cartKeys.getLong(1);
             } else {
@@ -59,6 +60,7 @@ public class DBClientRepository implements ClientRepository {
 
             ResultSet clientKeys = prepareClientStatement.getGeneratedKeys();
             long clientId;
+
             if (clientKeys.next()) {
                 clientId = clientKeys.getLong(1);
             } else {
@@ -70,22 +72,30 @@ public class DBClientRepository implements ClientRepository {
             prepareClientBankStatement.executeUpdate();
 
             return clientId;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-
     @Override
     public ClientResponse getClientResponseById(long clientResponseId) {
-        var selectClientSql = "SELECT id, name, cart_id FROM products_smirnov_pa.client WHERE id = ?";
-        var selectCartSql = "SELECT id, promocode FROM products_smirnov_pa.cart WHERE id = ?";
+        var selectClientSql = """
+                SELECT id, name, cart_id 
+                FROM products_smirnov_pa.client 
+                WHERE id = ?""";
+        var selectCartSql = """
+                SELECT id, promocode 
+                FROM products_smirnov_pa.cart 
+                WHERE id = ?
+                """;
         var selectProductsSql = """
-            SELECT p.id, p.name, p.price, pc.count
-            FROM products_smirnov_pa.product p
-            JOIN products_smirnov_pa.product_client pc ON p.id = pc.id_product
-            WHERE pc.id_cart = ?
-            """;
+                SELECT p.id, p.name, p.price, pc.count
+                FROM products_smirnov_pa.product p
+                JOIN products_smirnov_pa.product_client pc ON p.id = pc.id_product
+                WHERE pc.id_cart = ?
+                """;
+
         try (var connection = DriverManager.getConnection(JDBC);
              var prepareClientStatement = connection.prepareStatement(selectClientSql);
              var prepareCartStatement = connection.prepareStatement(selectCartSql);
@@ -93,6 +103,7 @@ public class DBClientRepository implements ClientRepository {
             prepareClientStatement.setLong(1, clientResponseId);
 
             ResultSet clientResultSet = prepareClientStatement.executeQuery();
+
             if (clientResultSet.next()) {
                 long id = clientResultSet.getLong("id");
                 String name = clientResultSet.getString("name");
@@ -100,6 +111,7 @@ public class DBClientRepository implements ClientRepository {
 
                 prepareCartStatement.setLong(1, cartId);
                 ResultSet cartResultSet = prepareCartStatement.executeQuery();
+
                 if (cartResultSet.next()) {
                     long cartIdResult = cartResultSet.getLong("id");
                     String promocode = cartResultSet.getString("promocode");
@@ -107,6 +119,7 @@ public class DBClientRepository implements ClientRepository {
                     prepareProductsStatement.setLong(1, cartIdResult);
                     ResultSet productsResultSet = prepareProductsStatement.executeQuery();
                     List<Product> products = new ArrayList<>();
+
                     while (productsResultSet.next()) {
                         long productId = productsResultSet.getLong("id");
                         String productName = productsResultSet.getString("name");
@@ -134,6 +147,7 @@ public class DBClientRepository implements ClientRepository {
     public boolean deleteClientById(long clientId) {
         var deleteClientSql = "DELETE FROM products_smirnov_pa.client WHERE id = ?";
         var deleteCartSql = "DELETE FROM products_smirnov_pa.cart WHERE id = ?";
+
         try (var connection = DriverManager.getConnection(JDBC);
              var deleteClientStatement = connection.prepareStatement(deleteClientSql);
              var deleteCartStatement = connection.prepareStatement(deleteCartSql)) {
@@ -143,7 +157,9 @@ public class DBClientRepository implements ClientRepository {
 
             deleteClientStatement.setLong(1, clientId);
             int rowsAffected = deleteClientStatement.executeUpdate();
+
             return rowsAffected > 0;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

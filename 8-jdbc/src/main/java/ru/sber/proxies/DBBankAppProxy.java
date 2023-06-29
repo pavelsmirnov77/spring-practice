@@ -14,26 +14,27 @@ import static ru.sber.repositories.DBProductRepository.JDBC;
 public class DBBankAppProxy implements BankAppInterfaceProxy {
     @Override
     public BigDecimal getBalanceClient(long clientId) {
-        String selectBalanceSql = """
-                SELECT balance FROM products_smirnov_pa.client_bank 
-                WHERE client_id = ?
-                """;
+        var selectBalanceSql = """
+            SELECT balance FROM products_smirnov_pa.client_bank 
+            WHERE client_id = ?
+            """;
 
         try (var connection = DriverManager.getConnection(JDBC);
-             PreparedStatement statement = connection.prepareStatement(selectBalanceSql)) {
+             var statement = connection.prepareStatement(selectBalanceSql)) {
 
             statement.setLong(1, clientId);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getBigDecimal("Баланс получен");
-            } else {
-                throw new RuntimeException("Пользователь не является клиентом банка");
+            try (var resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getBigDecimal("balance");
+                } else {
+                    throw new RuntimeException("User is not a bank client");
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void setBalanceClient(long clientId, BigDecimal newBalance) {

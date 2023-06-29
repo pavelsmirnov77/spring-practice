@@ -32,7 +32,7 @@ public interface ProductRepository {
      * @param productName название товара
      * @return список товаров с заданным названием
      */
-    Optional<Product> findProductByName(String productName);
+    List<Product> findProductByName(String productName);
 
      /**
      * Получение товара по id

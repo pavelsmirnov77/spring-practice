@@ -8,6 +8,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,7 +21,10 @@ public class DBProductRepository implements ProductRepository {
 
     @Override
     public long createProduct(Product product) {
-        var insertSql = "INSERT INTO products_smirnov_pa.product (name, price, count) VALUES (?,?,?);";
+        var insertSql = """
+                INSERT INTO products_smirnov_pa.product (name, price, count) 
+                VALUES (?,?,?);
+                """;
         try (var connection = DriverManager.getConnection(JDBC);
              var prepareStatement = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
             prepareStatement.setString(1, product.getName());
@@ -66,7 +71,9 @@ public class DBProductRepository implements ProductRepository {
 
     @Override
     public boolean deleteProductById(long productId) {
-        var selectSql = "DELETE FROM products_smirnov_pa.product WHERE id = ?";
+        var selectSql = """
+                DELETE FROM products_smirnov_pa.product 
+                WHERE id = ?""";
 
         try (var connection = DriverManager.getConnection(JDBC);
              var prepareStatement = connection.prepareStatement(selectSql)) {
@@ -81,28 +88,31 @@ public class DBProductRepository implements ProductRepository {
     }
 
     @Override
-    public Optional<Product> findProductByName(String productName) {
+    public List<Product> findProductByName(String productName) {
         var selectSql = """
-                SELECT * FROM products_smirnov_pa.product WHERE name = ?
+                SELECT * FROM products_smirnov_pa.product 
+                WHERE name like ?
                 """;
+        List<Product> products = new ArrayList<>();
 
         try (var connection = DriverManager.getConnection(JDBC);
              var prepareStatement = connection.prepareStatement(selectSql)) {
-            prepareStatement.setString(1, productName);
+            prepareStatement.setString(1, "%" + (productName == null ? "" : productName) + "%");
 
             var resultSet = prepareStatement.executeQuery();
 
-            if (resultSet.next()) {
-                int id = resultSet.getInt("id");
+            while (resultSet.next()) {
+                long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
                 double price = resultSet.getDouble("price");
                 long quantity = resultSet.getLong("count");
                 Product product = new Product(id, name, BigDecimal.valueOf(price), quantity);
 
-                return Optional.of(product);
+                products.add(product);
             }
 
-            return Optional.empty();
+            return products;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -111,7 +121,8 @@ public class DBProductRepository implements ProductRepository {
     @Override
     public Optional<Product> getProductById(long productId) {
         var selectSql = """
-                SELECT * FROM products_smirnov_pa.product WHERE id = ?
+                SELECT * FROM products_smirnov_pa.product 
+                WHERE id = ?
                 """;
 
         try (var connection = DriverManager.getConnection(JDBC);

@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:8081/products?productName=Подушка
+GET localhost:8081/products?productName=
 Content-Type: application/json
 
 ###

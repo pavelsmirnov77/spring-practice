@@ -1,6 +1,5 @@
 package ru.sber.repositories;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.sber.entities.Cart;
 import ru.sber.entities.Payment;
@@ -22,35 +21,34 @@ import static ru.sber.repositories.DBProductRepository.JDBC;
 @Repository
 public class DBCartRepository implements CartRepository {
 
-    @Autowired
-    private DBBankAppProxy bankAppProxy;
-
-    public DBCartRepository(DBBankAppProxy bankAppProxy) {
-        this.bankAppProxy = bankAppProxy;
-    }
-
     @Override
     public void addProductById(long cartId, long productId) {
         var selectProductSql = """ 
-                SELECT count FROM products_smirnov_pa.product_client 
-                WHERE id_product = ? 
-                AND id_cart = ?
-                """;
+            SELECT count FROM products_smirnov_pa.product_client 
+            WHERE id_product = ? 
+            AND id_cart = ?
+            """;
         var insertProductSql = """
-                INSERT INTO products_smirnov_pa.product_client (id_product, id_cart, count) 
-                VALUES (?, ?, 1
-                )""";
-        var updateProductSql = """
-                UPDATE products_smirnov_pa.product_client 
-                SET count = count + 1 
-                WHERE id_product = ? 
-                AND id_cart = ?
-                """;
+            INSERT INTO products_smirnov_pa.product_client (id_product, id_cart, count) 
+            VALUES (?, ?, 1)
+            """;
+        var updateCountClientProductSql = """
+            UPDATE products_smirnov_pa.product_client 
+            SET count = count + 1 
+            WHERE id_product = ? 
+            AND id_cart = ?
+            """;
+        var updateCountProductSql = """
+            UPDATE products_smirnov_pa.product 
+            SET count = count - 1
+            WHERE id = ?
+            """;
 
         try (var connection = DriverManager.getConnection(JDBC);
              var selectStatement = connection.prepareStatement(selectProductSql);
              var insertStatement = connection.prepareStatement(insertProductSql);
-             var updateStatement = connection.prepareStatement(updateProductSql)) {
+             var updateStatement = connection.prepareStatement(updateCountClientProductSql);
+             var updateCountStatement = connection.prepareStatement(updateCountProductSql)) {
 
             selectStatement.setLong(1, productId);
             selectStatement.setLong(2, cartId);
@@ -69,10 +67,14 @@ public class DBCartRepository implements CartRepository {
                 insertStatement.executeUpdate();
             }
 
+            updateCountStatement.setLong(1, productId);
+            updateCountStatement.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public boolean changeQuantity(long cartId, long productId, long quantity) {
@@ -123,25 +125,24 @@ public class DBCartRepository implements CartRepository {
     @Override
     public Optional<Payment> payment(long cartId) {
         var selectCartSql = """
-        SELECT id, promocode FROM products_smirnov_pa.cart 
-        WHERE id = ?
-        """;
+                SELECT id, promocode FROM products_smirnov_pa.cart 
+                WHERE id = ?
+                """;
         var selectProductsSql = """
-        SELECT pc.id_product, pc.count, p.name, p.price 
-        FROM products_smirnov_pa.product_client pc 
-        JOIN products_smirnov_pa.product p 
-        ON pc.id_product = p.id 
-        WHERE id_cart = ?
-        """;
+                SELECT pc.id_product, pc.count, p.name, p.price 
+                FROM products_smirnov_pa.product_client pc 
+                JOIN products_smirnov_pa.product p 
+                ON pc.id_product = p.id 
+                WHERE id_cart = ?
+                """;
         var updateBalanceSql = """
-        UPDATE products_smirnov_pa.client_bank 
-        SET balance = ? 
-        WHERE client_id = ?
-        """;
+                UPDATE products_smirnov_pa.client_bank 
+                SET balance = ? WHERE client_id = ?
+                """;
         var clearCartSql = """
-        DELETE FROM products_smirnov_pa.product_client 
-        WHERE id_cart = ?
-        """;
+                DELETE FROM products_smirnov_pa.product_client 
+                WHERE id_cart = ?
+                """;
 
         try (var connection = DriverManager.getConnection(JDBC);
              var cartStatement = connection.prepareStatement(selectCartSql);
@@ -151,6 +152,7 @@ public class DBCartRepository implements CartRepository {
 
             cartStatement.setLong(1, cartId);
             ResultSet cartResultSet = cartStatement.executeQuery();
+
             if (!cartResultSet.next()) {
                 return Optional.empty();
             }
@@ -159,17 +161,21 @@ public class DBCartRepository implements CartRepository {
             ResultSet productsResultSet = productsStatement.executeQuery();
 
             BigDecimal totalCost = BigDecimal.ZERO;
+
             while (productsResultSet.next()) {
                 int quantity = productsResultSet.getInt("count");
                 BigDecimal price = productsResultSet.getBigDecimal("price");
                 totalCost = totalCost.add(price.multiply(BigDecimal.valueOf(quantity)));
             }
 
-            BigDecimal clientBalance = bankAppProxy.getBalanceClient(getClientIdByCartId(cartId));
+            DBBankAppProxy bankAppProxy = new DBBankAppProxy();
+            long clientId = getClientIdByCartId(cartId);
 
-            if (clientBalance == null) {
+            if (clientId == -1) {
                 return Optional.empty();
             }
+
+            BigDecimal clientBalance = bankAppProxy.getBalanceClient(clientId);
 
             if (clientBalance.compareTo(totalCost) >= 0) {
                 BigDecimal updatedBalance = clientBalance.subtract(totalCost);
@@ -178,17 +184,16 @@ public class DBCartRepository implements CartRepository {
                      var clearCartStatement = connection.prepareStatement(clearCartSql)) {
 
                     updateBalanceStatement.setBigDecimal(1, updatedBalance);
-                    updateBalanceStatement.setLong(2, getClientIdByCartId(cartId));
+                    updateBalanceStatement.setLong(2, clientId);
                     updateBalanceStatement.executeUpdate();
 
                     clearCartStatement.setLong(1, cartId);
                     clearCartStatement.executeUpdate();
 
-                    bankAppProxy.setBalanceClient(getClientIdByCartId(cartId), updatedBalance);
-
                     return Optional.of(new Payment(totalCost, updatedBalance));
+
                 } catch (SQLException e) {
-                    throw new RuntimeException("Error performing payment: " + e.getMessage());
+                    throw new RuntimeException("Ошибка при приёме платежа: " + e.getMessage());
                 }
             }
 
@@ -201,14 +206,18 @@ public class DBCartRepository implements CartRepository {
 
     @Override
     public Optional<Cart> getCartById(long cartId) {
-        var selectCartSql = "SELECT id, promocode FROM products_smirnov_pa.cart WHERE id = ?";
+        var selectCartSql = """
+                SELECT id, promocode 
+                FROM products_smirnov_pa.cart 
+                WHERE id = ?
+                """;
         var selectProductsSql = """
-            SELECT pc.id_product, pc.count, p.name, p.price 
-            FROM products_smirnov_pa.product_client pc 
-            JOIN products_smirnov_pa.product p 
-            ON pc.id_product = p.id 
-            WHERE id_cart = ?
-            """;
+                SELECT pc.id_product, pc.count, p.name, p.price 
+                FROM products_smirnov_pa.product_client pc 
+                JOIN products_smirnov_pa.product p 
+                ON pc.id_product = p.id 
+                WHERE id_cart = ?
+                """;
 
         try (var connection = DriverManager.getConnection(JDBC);
              var cartStatement = connection.prepareStatement(selectCartSql);
@@ -249,14 +258,18 @@ public class DBCartRepository implements CartRepository {
                 SELECT cart_id FROM products_smirnov_pa.client 
                 WHERE cart_id = ?
                 """;
+
         try (var connection = DriverManager.getConnection(JDBC);
              var clientStatement = connection.prepareStatement(selectClientSql)) {
             clientStatement.setLong(1, cartId);
             ResultSet clientResultSet = clientStatement.executeQuery();
+
             if (clientResultSet.next()) {
                 return clientResultSet.getLong("cart_id");
             } else {
+
                 return -1;
+
             }
         }
     }
