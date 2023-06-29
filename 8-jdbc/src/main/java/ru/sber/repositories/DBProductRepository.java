@@ -10,6 +10,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
+/**
+ * Репозиторий, выполняющий действия над товаром
+ */
 @Repository
 public class DBProductRepository implements ProductRepository {
     public static final String JDBC = "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres";
@@ -79,7 +82,9 @@ public class DBProductRepository implements ProductRepository {
 
     @Override
     public Optional<Product> findProductByName(String productName) {
-        var selectSql = "SELECT * FROM products_smirnov_pa.product WHERE name = ?";
+        var selectSql = """
+                SELECT * FROM products_smirnov_pa.product WHERE name = ?
+                """;
 
         try (var connection = DriverManager.getConnection(JDBC);
              var prepareStatement = connection.prepareStatement(selectSql)) {
@@ -105,7 +110,9 @@ public class DBProductRepository implements ProductRepository {
 
     @Override
     public Optional<Product> getProductById(long productId) {
-        var selectSql = "SELECT * FROM products_smirnov_pa.product WHERE id = ?";
+        var selectSql = """
+                SELECT * FROM products_smirnov_pa.product WHERE id = ?
+                """;
 
         try (var connection = DriverManager.getConnection(JDBC);
              var prepareStatement = connection.prepareStatement(selectSql)) {

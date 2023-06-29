@@ -3,8 +3,8 @@ POST localhost:8081/products
 Content-Type: application/json
 
 {
-  "name": "Подушка",
-  "price": 500.00,
+  "name": "Сковородка",
+  "price": 1000.00,
   "quantity": 15
 }
 
@@ -31,10 +31,9 @@ POST localhost:8081/clients
 Content-Type: application/json
 
 {
-  "name": "Иван",
-  "login": "ivan123",
-  "password": "qwerty",
-  "email": "ivan@yandex.ru"
+  "name": "Павел",
+  "login": "pavel123",
+  "password": "123"
 }
 
 ###
@@ -42,20 +41,20 @@ GET localhost:8081/clients/1
 Content-Type: application/json
 
 ###
-DELETE localhost:8081/clients/355919
+DELETE localhost:8081/clients/3
 
 ###
-POST localhost:8081/carts/1/products/3
+POST localhost:8081/carts/1/products/2
 
 ###
-PUT localhost:8081/carts/1/products/3?quantity=5
+PUT localhost:8081/carts/1/products/1?quantity=1
 
 ###
-DELETE localhost:8081/carts/1/products/3
+DELETE localhost:8081/carts/2/products/2
 
 ###
-POST localhost:8081/carts/1/payment
+POST localhost:8081/carts/payment/1
 
 ###
-GET localhost:8081/carts/1
+GET localhost:8081/carts/3
 Content-Type: application/json

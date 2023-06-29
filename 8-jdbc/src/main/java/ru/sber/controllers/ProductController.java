@@ -9,9 +9,11 @@ import ru.sber.entities.Product;
 import ru.sber.exceptions.ProductNotFoundException;
 import ru.sber.repositories.ProductRepository;
 
-import java.util.List;
 import java.util.Optional;
 
+/**
+ * Контроллер для обработки запросов к товарам
+ */
 @Slf4j
 @RestController
 @RequestMapping("products")
@@ -32,7 +34,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getProducts(@RequestParam String productName) {
+    public ResponseEntity<?> getProduct(@RequestParam String productName) {
         try {
             log.info("Поиск товара по названию: {}", productName);
             Optional<Product> product = productRepository.findProductByName(productName);
@@ -41,7 +43,6 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
-
 
     @PutMapping
     public Product updateProduct(@RequestBody Product product) {
