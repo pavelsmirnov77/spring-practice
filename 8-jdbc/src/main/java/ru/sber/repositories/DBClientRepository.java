@@ -24,14 +24,14 @@ public class DBClientRepository implements ClientRepository {
     @Override
     public long registrationClient(Client client) {
         var insertClientSql = """
-                INSERT INTO products_smirnov_pa.client (name, username, password, cart_id) 
+                INSERT INTO client (name, username, password, cart_id) 
                 VALUES (?,?,?,?);""";
         var insertCartSql = """
-                INSERT INTO products_smirnov_pa.cart (promocode) 
+                INSERT INTO cart (promocode) 
                 VALUES (?);
                 """;
         var insertClientBankSql = """
-                INSERT INTO products_smirnov_pa.client_bank (balance, client_id) 
+                INSERT INTO client_bank (balance, client_id) 
                 VALUES (?, ?);
                 """;
 
@@ -82,18 +82,18 @@ public class DBClientRepository implements ClientRepository {
     public ClientResponse getClientResponseById(long clientResponseId) {
         var selectClientSql = """
                 SELECT id, name, cart_id 
-                FROM products_smirnov_pa.client 
+                FROM client 
                 WHERE id = ?
                 """;
         var selectCartSql = """
                 SELECT id, promocode 
-                FROM products_smirnov_pa.cart 
+                FROM cart 
                 WHERE id = ?
                 """;
         var selectProductsSql = """
                 SELECT p.id, p.name, p.price, pc.count
-                FROM products_smirnov_pa.product p
-                JOIN products_smirnov_pa.product_client pc ON p.id = pc.id_product
+                FROM product p
+                JOIN product_client pc ON p.id = pc.id_product
                 WHERE pc.id_cart = ?
                 """;
 
@@ -146,8 +146,8 @@ public class DBClientRepository implements ClientRepository {
 
     @Override
     public boolean deleteClientById(long clientId) {
-        var deleteClientSql = "DELETE FROM products_smirnov_pa.client WHERE id = ?";
-        var deleteCartSql = "DELETE FROM products_smirnov_pa.cart WHERE id = ?";
+        var deleteClientSql = "DELETE FROM client WHERE id = ?";
+        var deleteCartSql = "DELETE FROM cart WHERE id = ?";
 
         try (var connection = DriverManager.getConnection(JDBC);
              var deleteClientStatement = connection.prepareStatement(deleteClientSql);

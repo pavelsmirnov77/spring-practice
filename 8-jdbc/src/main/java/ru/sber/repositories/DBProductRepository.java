@@ -17,12 +17,12 @@ import java.util.Optional;
  */
 @Repository
 public class DBProductRepository implements ProductRepository {
-    public static final String JDBC = "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres";
+    public static final String JDBC = "jdbc:postgresql://localhost:5432/postgres?currentSchema=products_smirnov_pa&user=postgres&password=postgres";
 
     @Override
     public long createProduct(Product product) {
         var insertProductSql = """
-                INSERT INTO products_smirnov_pa.product (name, price, count) 
+                INSERT INTO product (name, price, count) 
                 VALUES (?,?,?);
                 """;
         try (var connection = DriverManager.getConnection(JDBC);
@@ -46,7 +46,7 @@ public class DBProductRepository implements ProductRepository {
     @Override
     public boolean changeProduct(Product product) {
         var updateProductSql = """
-                UPDATE products_smirnov_pa.product
+                UPDATE product
                 SET 
                 name = ?,
                 price = ?,
@@ -72,7 +72,7 @@ public class DBProductRepository implements ProductRepository {
     @Override
     public boolean deleteProductById(long productId) {
         var deleteProductSql = """
-                DELETE FROM products_smirnov_pa.product 
+                DELETE FROM product 
                 WHERE id = ?""";
 
         try (var connection = DriverManager.getConnection(JDBC);
@@ -90,7 +90,7 @@ public class DBProductRepository implements ProductRepository {
     @Override
     public List<Product> findProductByName(String productName) {
         var selectProductsSql = """
-                SELECT * FROM products_smirnov_pa.product 
+                SELECT * FROM product 
                 WHERE name like ?
                 """;
         List<Product> products = new ArrayList<>();
@@ -121,7 +121,7 @@ public class DBProductRepository implements ProductRepository {
     @Override
     public Optional<Product> getProductById(long productId) {
         var selectProductsSql = """
-                SELECT * FROM products_smirnov_pa.product 
+                SELECT * FROM product 
                 WHERE id = ?
                 """;
 

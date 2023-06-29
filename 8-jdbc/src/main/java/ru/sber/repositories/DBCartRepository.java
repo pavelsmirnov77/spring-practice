@@ -24,22 +24,22 @@ public class DBCartRepository implements CartRepository {
     @Override
     public void addProductById(long cartId, long productId) {
         var selectCountClientProductSql = """ 
-            SELECT count FROM products_smirnov_pa.product_client 
+            SELECT count FROM product_client 
             WHERE id_product = ? 
             AND id_cart = ?
             """;
         var insertProductSql = """
-            INSERT INTO products_smirnov_pa.product_client (id_product, id_cart, count) 
+            INSERT INTO product_client (id_product, id_cart, count) 
             VALUES (?, ?, 1)
             """;
         var updateCountClientProductSql = """
-            UPDATE products_smirnov_pa.product_client 
+            UPDATE product_client 
             SET count = count + 1 
             WHERE id_product = ? 
             AND id_cart = ?
             """;
         var updateCountProductSql = """
-            UPDATE products_smirnov_pa.product 
+            UPDATE product 
             SET count = count - 1
             WHERE id = ?
             """;
@@ -79,7 +79,7 @@ public class DBCartRepository implements CartRepository {
     @Override
     public boolean changeQuantity(long cartId, long productId, long quantity) {
         var updateQuantitySql = """
-                UPDATE products_smirnov_pa.product_client 
+                UPDATE product_client 
                 SET count = ? 
                 WHERE id_product = ? 
                 AND id_cart = ?
@@ -103,7 +103,7 @@ public class DBCartRepository implements CartRepository {
     @Override
     public boolean deleteProductFromCart(long cartId, long productId) {
         var deleteProductSql = """
-                DELETE FROM products_smirnov_pa.product_client
+                DELETE FROM product_client
                 WHERE id_product = ? 
                 AND id_cart = ?
                 """;
@@ -125,22 +125,22 @@ public class DBCartRepository implements CartRepository {
     @Override
     public Optional<Payment> payment(long cartId) {
         var selectCartCartSql = """
-                SELECT id, promocode FROM products_smirnov_pa.cart 
+                SELECT id, promocode FROM cart 
                 WHERE id = ?
                 """;
         var selectProductsSql = """
                 SELECT pc.id_product, pc.count, p.name, p.price 
-                FROM products_smirnov_pa.product_client pc 
-                JOIN products_smirnov_pa.product p 
+                FROM product_client pc 
+                JOIN product p 
                 ON pc.id_product = p.id 
                 WHERE id_cart = ?
                 """;
         var updateBalanceSql = """
-                UPDATE products_smirnov_pa.client_bank 
+                UPDATE client_bank 
                 SET balance = ? WHERE client_id = ?
                 """;
         var clearCartSql = """
-                DELETE FROM products_smirnov_pa.product_client 
+                DELETE FROM product_client 
                 WHERE id_cart = ?
                 """;
 
@@ -213,8 +213,8 @@ public class DBCartRepository implements CartRepository {
                 """;
         var selectClientProductsSql = """
                 SELECT pc.id_product, pc.count, p.name, p.price 
-                FROM products_smirnov_pa.product_client pc 
-                JOIN products_smirnov_pa.product p 
+                FROM product_client pc 
+                JOIN product p 
                 ON pc.id_product = p.id 
                 WHERE id_cart = ?
                 """;
@@ -255,7 +255,7 @@ public class DBCartRepository implements CartRepository {
 
     private long getClientIdByCartId(long cartId) throws SQLException {
         var selectCartIdClientSql = """
-                SELECT cart_id FROM products_smirnov_pa.client 
+                SELECT cart_id FROM client 
                 WHERE cart_id = ?
                 """;
 
