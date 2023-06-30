@@ -29,7 +29,7 @@ public class DBProductRepository implements ProductRepository {
     @Override
     public long createProduct(Product product) {
         var insertProductSql = """
-                INSERT INTO product (name, price, count) 
+                INSERT INTO products (name, price, count) 
                 VALUES (?,?,?);
                 """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -38,6 +38,7 @@ public class DBProductRepository implements ProductRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(insertProductSql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, product.getName());
             preparedStatement.setDouble(2, product.getPrice().doubleValue());
+            preparedStatement.setLong(3, product.getQuantity());
 
             return preparedStatement;
         };
@@ -50,7 +51,7 @@ public class DBProductRepository implements ProductRepository {
     @Override
     public boolean changeProduct(Product product) {
         var updateProductSql = """
-                UPDATE product
+                UPDATE products
                 SET 
                 name = ?,
                 price = ?,
@@ -61,7 +62,8 @@ public class DBProductRepository implements ProductRepository {
             var prepareStatement = connection.prepareStatement(updateProductSql);
             prepareStatement.setString(1, product.getName());
             prepareStatement.setDouble(2, product.getPrice().doubleValue());
-            prepareStatement.setLong(3, product.getId());
+            prepareStatement.setLong(3, product.getQuantity());
+            prepareStatement.setLong(4, product.getId());
 
             return prepareStatement;
         };
@@ -74,24 +76,42 @@ public class DBProductRepository implements ProductRepository {
     @Override
     public boolean deleteProductById(long productId) {
         var deleteProductSql = """
-                DELETE FROM product 
-                WHERE id = ?""";
+        DELETE FROM products 
+        WHERE id = ?
+        """;
+
+        var deleteProductFromCartsSql = """
+        DELETE FROM products_carts
+        WHERE id_product = ? AND id_cart = ?
+        """;
+
+        String selectCartsSql = """
+        SELECT id_cart
+        FROM products_carts
+        WHERE id_product = ?
+        """;
+        List<Long> cartIds = jdbcTemplate.queryForList(selectCartsSql, Long.class, productId);
+
+        for (Long cartId : cartIds) {
+            jdbcTemplate.update(deleteProductFromCartsSql, productId, cartId);
+        }
+
         PreparedStatementCreator preparedStatementCreator = connection -> {
             var prepareStatement = connection.prepareStatement(deleteProductSql);
             prepareStatement.setLong(1, productId);
-
             return prepareStatement;
         };
 
         int rows = jdbcTemplate.update(preparedStatementCreator);
-
         return rows > 0;
     }
+
+
 
     @Override
     public List<Product> findProductByName(String productName) {
         var selectProductsSql = """
-                SELECT * FROM product 
+                SELECT * FROM products 
                 WHERE name like ?
                 """;
         PreparedStatementCreator preparedStatementCreator = connection -> {
@@ -108,7 +128,7 @@ public class DBProductRepository implements ProductRepository {
 
     private static RowMapper<Product> getProductRowMapper() {
         return (resultSet, rowNum) -> {
-            int id = resultSet.getInt("id");
+            long id = resultSet.getLong("id");
             String name = resultSet.getString("name");
             double price = resultSet.getDouble("price");
             long quantity = resultSet.getLong("count");
@@ -119,7 +139,7 @@ public class DBProductRepository implements ProductRepository {
     @Override
     public Optional<Product> getProductById(long productId) {
         var selectProductsSql = """
-                SELECT * FROM product 
+                SELECT * FROM products
                 WHERE id = ?
                 """;
         PreparedStatementCreator preparedStatementCreator = connection -> {

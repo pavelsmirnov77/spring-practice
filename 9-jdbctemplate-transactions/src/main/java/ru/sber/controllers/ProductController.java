@@ -9,6 +9,7 @@ import ru.sber.entities.Product;
 import ru.sber.exceptions.ProductNotFoundException;
 import ru.sber.repositories.ProductRepository;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -27,10 +28,10 @@ public class ProductController {
     }
 
     @PostMapping
-    public long addProduct(@RequestBody Product product) {
+    public ResponseEntity<?> addProduct(@RequestBody Product product) {
         log.info("Добавление товара {}", product);
 
-        return productRepository.createProduct(product);
+        return ResponseEntity.created(URI.create("productId/" + productRepository.createProduct(product))).build();
     }
 
     @GetMapping

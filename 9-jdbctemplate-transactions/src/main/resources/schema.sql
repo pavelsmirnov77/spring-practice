@@ -21,8 +21,8 @@ create table products_smirnov_pa.clients
     password varchar(255) not null,
     email    varchar(255),
     cart_id  integer      not null
-        constraint client_cart_id_fk
-            references products_smirnov_pa.carts
+             constraint client_cart_id_fk
+             references products_smirnov_pa.carts
 );
 
 create table products_smirnov_pa.products_carts
