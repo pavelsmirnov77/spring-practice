@@ -122,6 +122,11 @@ public class DBCartRepository implements CartRepository {
                 if (rowsAffected == 0) {
                     throw new RuntimeException("Ошибка обновления количества товара");
                 }
+                int totalQuantity = getProductQuantity(product.getId());
+
+                if (product.getQuantity() > totalQuantity + 1) {
+                    throw new RuntimeException("Количество товара в корзине превышает общее количество товара");
+                }
             }
 
             int rowsAffected = jdbcTemplate.update(updateBalanceSql, updatedBalance, clientId);
@@ -136,7 +141,6 @@ public class DBCartRepository implements CartRepository {
 
         return Optional.empty();
     }
-
 
     @Override
     public Optional<Cart> getCartById(long cartId) {
@@ -172,11 +176,27 @@ public class DBCartRepository implements CartRepository {
         return Optional.of(cart);
     }
 
+    /**
+     * Получение id клиента по id корзины
+     * @param cartId id корзины
+     * @return id клиента
+     */
     private long getClientIdByCartId(long cartId) {
         String selectCartIdClientSql = """
                 SELECT cart_id FROM clients 
                 WHERE cart_id = ?
                 """;
         return jdbcTemplate.queryForObject(selectCartIdClientSql, Long.class, cartId);
+    }
+
+    /**
+     * Получает количество товара по id
+     * @param productId id товара
+     * @return количество товара
+     */
+    private int getProductQuantity(long productId) {
+        String getProductQuantitySql = "SELECT count FROM products WHERE id = ?";
+
+        return jdbcTemplate.queryForObject(getProductQuantitySql, Integer.class, productId);
     }
 }

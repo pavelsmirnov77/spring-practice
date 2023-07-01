@@ -4,8 +4,8 @@ Content-Type: application/json
 
 {
   "name": "Ложка для обуви",
-  "price": 100000,
-  "quantity": 15
+  "price": 10000,
+  "quantity": 1
 }
 
 ###
@@ -17,10 +17,10 @@ PUT localhost:8081/products
 Content-Type: application/json
 
 {
-  "id": 2,
+  "id": 8,
   "name": "Спальный мешок",
   "price": 800,
-  "quantity": 15
+  "quantity": 99
 }
 
 ###
@@ -38,17 +38,17 @@ Content-Type: application/json
 }
 
 ###
-GET localhost:8081/clients/1
+GET localhost:8081/clients/4
 Content-Type: application/json
 
 ###
 DELETE localhost:8081/clients/2
 
 ###
-POST localhost:8081/carts/3/products/6
+POST localhost:8081/carts/4/products/8
 
 ###
-PUT localhost:8081/carts/3/products/3
+PUT localhost:8081/carts/3/products/4
 Content-Type: application/json
 
 {
@@ -59,7 +59,7 @@ Content-Type: application/json
 DELETE localhost:8081/carts/3/products/3
 
 ###
-POST localhost:8081/carts/payment/3
+POST localhost:8081/carts/payment/4
 
 ###
 GET localhost:8081/carts/1
