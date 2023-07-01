@@ -11,8 +11,8 @@
     <groupId>ru.sber</groupId>
     <artifactId>10-hibernate-springdata</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>10-hibernate-springdata</name>
-    <description>10-hibernate-springdata</description>
+    <name>10-hibernate-spring-data</name>
+    <description>10-hibernate-spring-data</description>
     <properties>
         <java.version>17</java.version>
     </properties>
