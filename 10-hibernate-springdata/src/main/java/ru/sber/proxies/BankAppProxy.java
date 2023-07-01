@@ -8,11 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BankAppProxy implements BankAppInterfaceProxy {
-    List<ClientBank> clientsBank = new ArrayList<>(List.of(
-            new ClientBank(1, BigDecimal.valueOf(10000)),
-            new ClientBank(2, BigDecimal.valueOf(20000)),
-            new ClientBank(3, BigDecimal.valueOf(30000))
-    ));
+    List<ClientBank> clientsBank = new ArrayList<>();
 
     @Override
     public BigDecimal getBalance(long clientId) {
