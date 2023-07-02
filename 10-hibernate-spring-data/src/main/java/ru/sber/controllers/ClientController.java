@@ -28,9 +28,12 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<?> addClient(@RequestBody Client client) {
-        log.info("Регистрация клиента {}", client);
+        log.info("Проходит регистрация клиента {}", client);
+        long id = clientServiceImpl.registrationClient(client);
 
-        return  ResponseEntity.created(URI.create("clientId/" + clientServiceImpl.registrationClient(client))).build();
+        return  ResponseEntity
+                .created(URI.create("clientId/" + id))
+                .build();
     }
 
     @GetMapping("/{clientId}")
@@ -40,7 +43,9 @@ public class ClientController {
             ClientResponse clientResponse = clientServiceImpl.getClientResponseById(clientId);
             return ResponseEntity.ok(clientResponse);
         } catch (UserNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ex.getMessage());
         }
     }
 

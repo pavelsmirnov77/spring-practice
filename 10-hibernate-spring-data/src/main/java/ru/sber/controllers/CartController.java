@@ -29,14 +29,14 @@ public class CartController {
 
     @PostMapping("/{cartId}/products/{productId}")
     public void addProductToCart(@PathVariable long cartId, @PathVariable long productId) {
-        log.info("Товар с id {} добавлен в корзину с id {}", productId, cartId);
+        log.info("Товар с id {} добавляется в корзину с id {}", productId, cartId);
         cartServiceImpl.addProductById(cartId, productId);
     }
 
     @PutMapping("/{cartId}/products/{productId}")
     public ResponseEntity<?> changeProductQuantity(@PathVariable long cartId, @PathVariable long productId, @RequestBody Product product) {
         long quantity = product.getQuantity();
-        log.info("У товара с id {} в корзине с id {} изменено количество на значение {}", productId, cartId, quantity);
+        log.info("Изменяется количество товара с id {} в корзине с id {} на значение {}", productId, cartId, quantity);
 
         boolean quantityChanged = cartServiceImpl.changeQuantity(cartId, productId, quantity);
         HttpStatus status = quantityChanged ? HttpStatus.OK : HttpStatus.NOT_FOUND;

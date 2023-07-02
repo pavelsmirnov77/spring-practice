@@ -74,11 +74,7 @@ public class ClientServiceImpl implements ClientService {
 
         if (clientOptional.isPresent()) {
             Client client = clientOptional.get();
-            long cartId = client.getCart().getId();
-            List<ProductCart> productCarts = productCartRepository.findByCartId(cartId);
-            productCartRepository.deleteAll(productCarts);
             clientRepository.delete(client);
-            cartRepository.deleteById(cartId);
 
             return true;
         }

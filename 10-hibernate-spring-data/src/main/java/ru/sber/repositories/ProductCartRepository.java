@@ -9,6 +9,7 @@ import ru.sber.entities.Product;
 import ru.sber.entities.ProductCart;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductCartRepository extends JpaRepository<ProductCart, Long> {
@@ -18,7 +19,7 @@ public interface ProductCartRepository extends JpaRepository<ProductCart, Long> 
     List<ProductCart> findByCartId(long cartId);
 
     @Query("SELECT pc FROM ProductCart pc WHERE pc.product.id = :productId AND pc.cart.id = :cartId")
-    ProductCart findByProductIdAndCartId(@Param("productId") long productId, @Param("cartId") long cartId);
+    Optional<ProductCart> findByProductIdAndCartId(@Param("productId") long productId, @Param("cartId") long cartId);
 
     void deleteByProductAndCart(Product product, Cart cart);
 }

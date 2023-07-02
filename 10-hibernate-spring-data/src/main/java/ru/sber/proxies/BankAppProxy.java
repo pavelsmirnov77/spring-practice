@@ -22,7 +22,7 @@ public class BankAppProxy implements BankAppInterfaceProxy {
                 return clientBank.getBalance();
             }
         }
-        throw new PaymentException("Оплата не прошла");
+        throw new PaymentException("Клиент не найден");
     }
 
     @Override
@@ -30,6 +30,7 @@ public class BankAppProxy implements BankAppInterfaceProxy {
         for(ClientBank clientBank : clientsBank) {
             if (clientBank.getClientId() == clientId) {
                 clientBank.setBalance(newBalance);
+                break;
             }
         }
     }

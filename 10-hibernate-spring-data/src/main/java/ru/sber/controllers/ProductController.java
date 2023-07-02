@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("products")
 public class ProductController {
-
     private final ProductServiceImpl productServiceImpl;
 
     @Autowired
@@ -29,9 +28,11 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<?> addProduct(@RequestBody Product product) {
-        log.info("Добавление товара {}", product);
-
-        return ResponseEntity.created(URI.create("productId/" + productServiceImpl.createProduct(product))).build();
+        log.info("Добавляется товар {}", product);
+        long id = productServiceImpl.createProduct(product);
+        return ResponseEntity
+                .created(URI.create("productId/" + id))
+                .build();
     }
 
     @GetMapping
@@ -47,7 +48,7 @@ public class ProductController {
 
     @PutMapping
     public Product updateProduct(@RequestBody Product product) {
-        log.info("Обновление продукта: {}", product);
+        log.info("Обновляется товар: {}", product);
         productServiceImpl.changeProduct(product);
 
         return product;

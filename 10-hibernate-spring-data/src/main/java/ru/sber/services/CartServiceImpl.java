@@ -48,18 +48,20 @@ public class CartServiceImpl implements CartService {
             Product product = productOptional.get();
             Cart cart = cartOptional.get();
 
-            ProductCart existingProductCart = productCartRepository.findByProductIdAndCartId(productId, cartId);
+            Optional<ProductCart> existingProductCart = productCartRepository.findByProductIdAndCartId(productId, cartId);
 
-            if (existingProductCart != null) {
-                existingProductCart.setQuantity(existingProductCart.getQuantity() + 1);
-                productCartRepository.save(existingProductCart);
+            ProductCart productCart;
+
+            if (existingProductCart.isPresent()) {
+                productCart = existingProductCart.get();
+                productCart.setQuantity(productCart.getQuantity() + 1);
             } else {
-                ProductCart productCart = new ProductCart();
+                productCart = new ProductCart();
                 productCart.setProduct(product);
                 productCart.setCart(cart);
                 productCart.setQuantity(1);
-                productCartRepository.save(productCart);
             }
+            productCartRepository.save(productCart);
         } else if (cartOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Корзина не найдена");
         } else {
@@ -67,13 +69,15 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+
     @Override
     public boolean changeQuantity(long cartId, long productId, long quantity) {
-        ProductCart existingProductCart = productCartRepository.findByProductIdAndCartId(productId, cartId);
+        Optional<ProductCart> existingProductCart = productCartRepository.findByProductIdAndCartId(productId, cartId);
 
-        if (existingProductCart != null) {
-            existingProductCart.setQuantity(quantity);
-            productCartRepository.save(existingProductCart);
+        if (existingProductCart.isPresent()) {
+            ProductCart productCart = existingProductCart.get();
+            productCart.setQuantity(quantity);
+            productCartRepository.save(productCart);
             return true;
         }
 
@@ -187,7 +191,6 @@ public class CartServiceImpl implements CartService {
             productRepository.save(product);
         }
     }
-
 
     @Override
     public List<Product> getCartById(long cartId) {
