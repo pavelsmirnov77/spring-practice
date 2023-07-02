@@ -1,43 +1,68 @@
 package ru.sber.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sber.entities.Product;
+import ru.sber.repositories.ProductCartRepository;
+import ru.sber.repositories.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductServiceImpl {
-    /**
-     * Добавляет товар
-     * @param product объект товара
-     * @return id товара
-     */
-    long createProduct(Product product);
+@Service
+public class ProductServiceImpl implements ProductService {
+    private final ProductRepository productRepository;
+    private final ProductCartRepository productCartRepository;
 
-    /**
-     * Изменяет название и цену товара
-     * @param product объект товара
-     * @return true, если товар изменен улачно, иначе false
-     */
-    boolean changeProduct(Product product);
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository, ProductCartRepository productCartRepository) {
+        this.productRepository = productRepository;
+        this.productCartRepository = productCartRepository;
+    }
 
-    /**
-     * Удаляет товар по id
-     * @param productId id товара
-     * @return true, если товар удален успешно, иначе false
-     */
-    boolean deleteProductById(long productId);
+    @Override
+    public long createProduct(Product product) {
+        Product createdProduct = productRepository.save(product);
 
-    /**
-     * Ищет товары по названию
-     * @param productName название товара
-     * @return список товаров с заданным названием
-     */
-    List<Product> findProductByName(String productName);
+        return createdProduct.getId();
+    }
 
-    /**
-     * Получение товара по id
-     * @param productId id товара
-     * @return объект полученного товара
-     */
-    Optional<Product> getProductById(long productId);
+    @Override
+    public boolean changeProduct(Product product) {
+        productRepository.save(product);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteProductById(long productId) {
+        Optional<Product> productOptional = productRepository.findById(productId);
+
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            productCartRepository.deleteByProduct(product);
+            productRepository.deleteById(productId);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<Product> findProductByName(String productName) {
+        if(productName == null) {
+            return productRepository.findAll();
+        }
+        else {
+            return productRepository.findAll()
+                    .stream()
+                    .filter(product -> product.getName()
+                            .toLowerCase()
+                            .contains(productName.toLowerCase()))
+                    .toList();
+        }
+    }
 }

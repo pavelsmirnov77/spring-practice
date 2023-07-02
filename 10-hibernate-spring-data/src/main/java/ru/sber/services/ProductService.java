@@ -1,49 +1,36 @@
 package ru.sber.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import ru.sber.entities.Product;
-import ru.sber.repositories.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class ProductService implements ProductServiceImpl {
-    private final ProductRepository productRepository;
+public interface ProductService {
+    /**
+     * Добавляет товар
+     * @param product объект товара
+     * @return id товара
+     */
+    long createProduct(Product product);
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    /**
+     * Изменяет название и цену товара
+     * @param product объект товара
+     * @return true, если товар изменен улачно, иначе false
+     */
+    boolean changeProduct(Product product);
 
-    @Override
-    public long createProduct(Product product) {
-        Product createdProduct = productRepository.save(product);
+    /**
+     * Удаляет товар по id
+     * @param productId id товара
+     * @return true, если товар удален успешно, иначе false
+     */
+    boolean deleteProductById(long productId);
 
-        return createdProduct.getId();
-    }
-
-    @Override
-    public boolean changeProduct(Product product) {
-        productRepository.save(product);
-
-        return true;
-    }
-
-    @Override
-    public boolean deleteProductById(long productId) {
-        productRepository.deleteById(productId);
-
-        return true;
-    }
-
-    @Override
-    public List<Product> findProductByName(String productName) {
-        return productRepository.findByName(productName);
-    }
-
-    @Override
-    public Optional<Product> getProductById(long productId) {
-        return productRepository.findById(productId);
-    }
+    /**
+     * Ищет товары по названию
+     * @param productName название товара
+     * @return список товаров с заданным названием
+     */
+    List<Product> findProductByName(String productName);
 }

@@ -1,5 +1,7 @@
 package ru.sber.proxies;
 
+import ru.sber.entities.ClientBank;
+
 import java.math.BigDecimal;
 
 public interface BankAppInterfaceProxy {
@@ -15,4 +17,10 @@ public interface BankAppInterfaceProxy {
      * @param newBalance новое значение баланса
      */
     void setBalance(long clientId, BigDecimal newBalance);
+
+    /**
+     * Добавляет клиента в список банковских клиентов
+     * @param client клиент интернет магазина
+     */
+    void addClient(ClientBank client);
 }

@@ -1,11 +1,17 @@
 package ru.sber.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Сущность товаров в корзине
  */
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "products_carts", schema = "products_smirnov_pa")
 public class ProductCart {
     @Id

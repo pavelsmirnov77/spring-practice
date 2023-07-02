@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.sber</groupId>
-    <artifactId>10-hibernate-springdata</artifactId>
+    <artifactId>10-hibernate-spring-data</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>10-hibernate-spring-data</name>
     <description>10-hibernate-spring-data</description>

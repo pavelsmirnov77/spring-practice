@@ -19,6 +19,8 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @OneToMany(mappedBy = "cart")
+    private List<ProductCart> productCarts;
     @Column(nullable = false)
     private String promocode;
 }

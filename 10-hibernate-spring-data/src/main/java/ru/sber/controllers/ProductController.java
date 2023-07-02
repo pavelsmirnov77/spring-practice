@@ -7,8 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sber.entities.Product;
 import ru.sber.exceptions.ProductNotFoundException;
-import ru.sber.repositories.ProductRepository;
-import ru.sber.services.ProductService;
+import ru.sber.services.ProductServiceImpl;
 
 import java.net.URI;
 import java.util.List;
@@ -21,25 +20,25 @@ import java.util.List;
 @RequestMapping("products")
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductServiceImpl productServiceImpl;
 
     @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ProductController(ProductServiceImpl productServiceImpl) {
+        this.productServiceImpl = productServiceImpl;
     }
 
     @PostMapping
     public ResponseEntity<?> addProduct(@RequestBody Product product) {
         log.info("Добавление товара {}", product);
 
-        return ResponseEntity.created(URI.create("productId/" + productService.createProduct(product))).build();
+        return ResponseEntity.created(URI.create("productId/" + productServiceImpl.createProduct(product))).build();
     }
 
     @GetMapping
     public ResponseEntity<?> getProduct(@RequestParam String productName) {
         try {
             log.info("Поиск товара по названию: {}", productName);
-            List<Product> product = productService.findProductByName(productName);
+            List<Product> product = productServiceImpl.findProductByName(productName);
             return ResponseEntity.ok().body(product);
         } catch (ProductNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -49,14 +48,14 @@ public class ProductController {
     @PutMapping
     public Product updateProduct(@RequestBody Product product) {
         log.info("Обновление продукта: {}", product);
-        productService.changeProduct(product);
+        productServiceImpl.changeProduct(product);
 
         return product;
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable long id) {
-        boolean isDeleted = productService.deleteProductById(id);
+        boolean isDeleted = productServiceImpl.deleteProductById(id);
 
         if (isDeleted) {
             log.info("Удаление товара с id {} прошло успешно", id);
