@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(schema = "products_smirnov_pa")
+@Table(name = "products_carts")
 public class ProductCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
