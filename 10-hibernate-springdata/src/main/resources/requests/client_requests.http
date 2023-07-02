@@ -1,0 +1,17 @@
+###
+POST localhost:8081/clients
+Content-Type: application/json
+
+{
+  "name": "Павел",
+  "login": "pavel123",
+  "password": "password123",
+  "email": "pavel@yandex.ru"
+}
+
+###
+GET localhost:8081/clients/1
+Content-Type: application/json
+
+###
+DELETE localhost:8081/clients/1

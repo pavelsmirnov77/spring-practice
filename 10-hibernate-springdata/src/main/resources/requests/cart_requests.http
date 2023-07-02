@@ -1,0 +1,20 @@
+###
+POST localhost:8081/carts/1/products/1
+
+###
+PUT localhost:8081/carts/1/products/2
+Content-Type: application/json
+
+{
+  "quantity": 20
+}
+
+###
+DELETE localhost:8081/carts/1/products/1
+
+###
+POST localhost:8081/carts/payment/1
+
+###
+GET localhost:8081/carts/1
+Content-Type: application/json
