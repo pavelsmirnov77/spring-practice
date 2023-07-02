@@ -6,7 +6,7 @@ package ru.sber.entities;
  * @param name имя пользователя
  * @param phoneNumber номер телефона пользователя
  * @param email электронная почта пользователя
- * @param password пароль
+ * @param password пароль пользователя
  */
 public record User(long id, String name, String phoneNumber, String email, String password) {
 }
