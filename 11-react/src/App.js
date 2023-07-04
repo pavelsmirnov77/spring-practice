@@ -41,6 +41,11 @@ const App = () => {
             return;
         }
 
+        if (cartItems.length === 0) {
+            alert('Корзина пуста.');
+            return;
+        }
+
         const totalAmount = cartItems.reduce(
             (total, item) => total + item.product.price * item.quantity,
             0
