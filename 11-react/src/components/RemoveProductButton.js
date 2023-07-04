@@ -6,7 +6,9 @@ export const RemoveProductButton = ({ onRemove }) => {
     };
 
     return (
-        <button className={"button-delete"} onClick={handleRemoveClick} style={{ backgroundColor: 'red', color: 'white', cursor: 'pointer' }}>
+        <button
+            className={"button-delete"}
+            onClick={handleRemoveClick}>
             Удалить
         </button>
     )

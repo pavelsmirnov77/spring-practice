@@ -67,16 +67,30 @@ const App = () => {
     }
 
     const handleRemoveFromCart = (productId) => {
-        const updatedItems = cartItems.filter((item) => item.product.id !== productId)
+        const updatedItems = cartItems.filter((item) =>
+            item.product.id !== productId)
         setCartItems(updatedItems)
     }
 
     return (
         <div>
-            <User currentUser={currentUser} onUserChange={handleUserChange} />
-            <Products onAddToCart={handleAddToCart} />
-            <Cart cartItems={cartItems} setCartItems={setCartItems} onRemoveFromCart={handleRemoveFromCart}/>
-            <Payment currentUser={currentUser} cartItems={cartItems} onPayment={handlePayment}/>
+            <User
+                currentUser={currentUser}
+                onUserChange={handleUserChange}
+            />
+            <Products
+                onAddToCart={handleAddToCart}
+            />
+            <Cart
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+                onRemoveFromCart={handleRemoveFromCart}
+            />
+            <Payment
+                currentUser={currentUser}
+                cartItems={cartItems}
+                onPayment={handlePayment}
+            />
         </div>
     )
 }

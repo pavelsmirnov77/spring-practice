@@ -8,7 +8,11 @@ export const Payment = ({totalAmount, onPayment}) => {
     return (
         <div>
             <h2>Оплата</h2>
-            <button className={"payment-button"} onClick={handlePayment}>Оплатить</button>
+            <button
+                className={"payment-button"}
+                onClick={handlePayment}>
+                Оплатить
+            </button>
         </div>
     )
 }

@@ -32,10 +32,32 @@ export const AddProductForm = ({onAddProduct}) => {
 
     return (
         <div>
-            <input className={"input-text"} type="text" placeholder="Название" value={name} onChange={handleNameChange} />
-            <input className={"input-number"} type="number" placeholder="Цена" value={price} onChange={handlePriceChange} />
-            <input className={"input-number"} type="number" placeholder="Количество" value={quantity} onChange={handleQuantityChange} />
-            <button className={"button-small"} onClick={handleAddProduct}>Добавить товар</button>
+            <input
+                className={"input-text"}
+                type="text"
+                placeholder="Название"
+                value={name}
+                onChange={handleNameChange}
+            />
+            <input
+                className={"input-number"}
+                type="number"
+                placeholder="Цена"
+                value={price}
+                onChange={handlePriceChange}
+            />
+            <input
+                className={"input-number"}
+                type="number"
+                placeholder="Количество"
+                value={quantity}
+                onChange={handleQuantityChange}
+            />
+            <button
+                className={"button-small"}
+                onClick={handleAddProduct}>
+                Добавить товар
+            </button>
         </div>
     )
 }

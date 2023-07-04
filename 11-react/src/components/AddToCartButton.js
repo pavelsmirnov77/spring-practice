@@ -14,8 +14,17 @@ export const AddToCartButton = ({product, onAddToCart}) => {
 
     return (
         <div>
-            <input className={"input-number"} type="number" value={quantity} min="1" onChange={handleQuantityChange} />
-            <button className={"button-add"} onClick={handleAddToCart}>Добавить в корзину</button>
+            <input
+                className={"input-number"}
+                type="number"
+                value={quantity} min="1"
+                onChange={handleQuantityChange}
+            />
+            <button
+                className={"button-add"}
+                onClick={handleAddToCart}>
+                Добавить в корзину
+            </button>
         </div>
     )
 }

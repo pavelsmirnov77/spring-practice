@@ -6,6 +6,10 @@ export const RemoveFromCartButton = ({ productId, onRemoveFromCart }) => {
     }
 
     return (
-        <button className={"button-delete"} onClick={handleClick}>Удалить из корзины</button>
+        <button
+            className={"button-delete"}
+            onClick={handleClick}>
+            Удалить из корзины
+        </button>
     )
 }

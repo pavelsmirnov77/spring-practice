@@ -51,7 +51,10 @@ export const User = ({currentUser, onUserChange}) => {
     return (
         <div>
             <h2>Информация о пользователе</h2>
-            <select className={"select-field"} value={currentUser ? currentUser.id : ''} onChange={handleUserChange}>
+            <select
+                className={"select-field"}
+                value={currentUser ? currentUser.id : ''}
+                onChange={handleUserChange}>
                 <option>Выбрать пользователя</option>
                 {users.map((user) => (
                     <option key={user.id} value={user.id}>
@@ -60,7 +63,11 @@ export const User = ({currentUser, onUserChange}) => {
                 ))}
             </select>
             {!currentUser && (
-                <button className={"register-button"} onClick={handleOpenRegistration}>Зарегистрироваться</button>
+                <button
+                    className={"register-button"}
+                    onClick={handleOpenRegistration}>
+                    Зарегистрироваться
+                </button>
             )}
             {currentUser && (
                 <div className={"user-card"}>
