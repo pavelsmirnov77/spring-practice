@@ -38,12 +38,12 @@ const App = () => {
     const handlePayment = (amount) => {
         if (!currentUser) {
             alert('Пожалуйста, выберите пользователя.')
-            return;
+            return
         }
 
         if (cartItems.length === 0) {
-            alert('Корзина пуста.');
-            return;
+            alert('Корзина пуста.')
+            return
         }
 
         const totalAmount = cartItems.reduce(

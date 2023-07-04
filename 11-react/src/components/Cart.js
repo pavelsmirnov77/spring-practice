@@ -1,16 +1,15 @@
-import React, {useState} from 'react'
-import {RemoveFromCartButton} from './RemoveFromCartButton'
+import React, { useState } from 'react'
+import { RemoveFromCartButton } from './RemoveFromCartButton'
+import { ChangeQuantityButton } from './ChangeQuantityButton'
 
 export const Cart = ({cartItems, onRemoveFromCart, setCartItems}) => {
     const [editingItemId, setEditingItemId] = useState(null)
-    const [editedQuantity, setEditedQuantity] = useState(0);
 
-    const handleEditQuantity = (itemId, currentQuantity) => {
+    const handleEditQuantity = (itemId) => {
         setEditingItemId(itemId)
-        setEditedQuantity(currentQuantity)
     }
 
-    const handleSaveQuantity = (itemId) => {
+    const handleSaveQuantity = (itemId, editedQuantity) => {
         const updatedCartItems = cartItems.map((item) => {
             if (item.product.id === itemId) {
                 return {
@@ -18,13 +17,16 @@ export const Cart = ({cartItems, onRemoveFromCart, setCartItems}) => {
                     quantity: editedQuantity,
                 };
             }
-            return item;
+            return item
         })
 
         setCartItems(updatedCartItems)
 
         setEditingItemId(null)
-        setEditedQuantity(0);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingItemId(null)
     }
 
     if (cartItems.length === 0) {
@@ -47,34 +49,34 @@ export const Cart = ({cartItems, onRemoveFromCart, setCartItems}) => {
                         <div>
                             Количество:{' '}
                             {editingItemId === item.product.id ? (
-                                <input
-                                    className={"small-input"}
-                                    type="number"
-                                    value={editedQuantity}
-                                    onChange={(e) =>
-                                        setEditedQuantity(e.target.value)}
+                                <ChangeQuantityButton
+                                    itemId={item.product.id}
+                                    currentQuantity={item.quantity}
+                                    onSaveQuantity={handleSaveQuantity}
+                                    onCancel={handleCancelEdit}
                                 />
                             ) : (
                                 <span>{item.quantity}</span>
                             )}
-                            {editingItemId === item.product.id ? (
-                                <>
-                                    <button className={"button-change"} onClick={() =>
-                                        handleSaveQuantity(item.product.id)}>OK</button>
-                                    <button className={"button-change"} onClick={() =>
-                                        setEditingItemId(null)}>Отмена</button>
-                                </>
-                            ) : (
-                                <button className={"button-change"} onClick={() => handleEditQuantity(item.product.id, item.quantity)}>
+                            {editingItemId !== item.product.id && (
+                                <button
+                                    className={'button-change'}
+                                    onClick={() => handleEditQuantity(item.product.id)}
+                                >
                                     Изменить
                                 </button>
                             )}
                         </div>
-                        <div>Общая стоимость товара: {item.product.price * item.quantity}</div>
-                        <RemoveFromCartButton productId={item.product.id} onRemoveFromCart={onRemoveFromCart} />
+                        <div>
+                            Общая стоимость товара: {item.product.price * item.quantity}
+                        </div>
+                        <RemoveFromCartButton
+                            productId={item.product.id}
+                            onRemoveFromCart={onRemoveFromCart}
+                        />
                     </li>
                 ))}
             </ul>
         </div>
-    );
-};
+    )
+}
