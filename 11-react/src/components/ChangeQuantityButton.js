@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react'
 
-export const ChangeQuantityButton = ({ itemId, currentQuantity, onSaveQuantity, onCancel }) => {
-    const [editedQuantity, setEditedQuantity] = useState(currentQuantity);
+export const ChangeQuantityButton = ({itemId, currentQuantity, onSaveQuantity, onCancel}) => {
+    const [editedQuantity, setEditedQuantity] = useState(currentQuantity)
 
     const handleSave = () => {
-        onSaveQuantity(itemId, editedQuantity);
-    };
+        onSaveQuantity(itemId, editedQuantity)
+    }
 
     const handleCancel = () => {
-        onCancel();
-    };
+        onCancel()
+    }
 
     return (
         <div>
@@ -26,5 +26,5 @@ export const ChangeQuantityButton = ({ itemId, currentQuantity, onSaveQuantity, 
                 Отмена
             </button>
         </div>
-    );
-};
+    )
+}

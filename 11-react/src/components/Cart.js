@@ -1,9 +1,18 @@
-import React, { useState } from 'react'
-import { RemoveFromCartButton } from './RemoveFromCartButton'
-import { ChangeQuantityButton } from './ChangeQuantityButton'
+import React, {useState, useEffect} from 'react'
+import {RemoveFromCartButton} from './RemoveFromCartButton'
+import {ChangeQuantityButton} from './ChangeQuantityButton'
 
 export const Cart = ({cartItems, onRemoveFromCart, setCartItems}) => {
     const [editingItemId, setEditingItemId] = useState(null)
+    const [totalPrice, setTotalPrice] = useState(0)
+
+    useEffect(() => {
+        let total = 0
+        cartItems.forEach((item) => {
+            total += item.product.price * item.quantity
+        })
+        setTotalPrice(total)
+    }, [cartItems])
 
     const handleEditQuantity = (itemId) => {
         setEditingItemId(itemId)
@@ -12,18 +21,21 @@ export const Cart = ({cartItems, onRemoveFromCart, setCartItems}) => {
     const handleSaveQuantity = (itemId, editedQuantity) => {
         const updatedCartItems = cartItems.map((item) => {
             if (item.product.id === itemId) {
-                return {
-                    ...item,
-                    quantity: editedQuantity,
-                };
+
+                if (item.quantity !== editedQuantity) {
+                    return {
+                        ...item,
+                        quantity: item.quantity + (editedQuantity - item.quantity),
+                    }
+                }
             }
             return item
         })
 
         setCartItems(updatedCartItems)
-
         setEditingItemId(null)
-    };
+    }
+
 
     const handleCancelEdit = () => {
         setEditingItemId(null)
@@ -45,7 +57,7 @@ export const Cart = ({cartItems, onRemoveFromCart, setCartItems}) => {
                 {cartItems.map((item) => (
                     <li key={item.product.id} className={'card'}>
                         <div>Название: {item.product.name}</div>
-                        <div>Цена: {item.product.price}</div>
+                        <div>Цена: {item.product.price} руб.</div>
                         <div>
                             Количество:{' '}
                             {editingItemId === item.product.id ? (
@@ -67,9 +79,7 @@ export const Cart = ({cartItems, onRemoveFromCart, setCartItems}) => {
                                 </button>
                             )}
                         </div>
-                        <div>
-                            Общая стоимость товара: {item.product.price * item.quantity}
-                        </div>
+                        <div>Общая стоимость товара: {item.product.price * item.quantity} руб.</div>
                         <RemoveFromCartButton
                             productId={item.product.id}
                             onRemoveFromCart={onRemoveFromCart}
@@ -77,6 +87,7 @@ export const Cart = ({cartItems, onRemoveFromCart, setCartItems}) => {
                     </li>
                 ))}
             </ul>
+            <h3>Общая стоимость к оплате: {totalPrice} руб.</h3>
         </div>
     )
 }
