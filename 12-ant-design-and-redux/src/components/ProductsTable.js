@@ -1,4 +1,4 @@
-import {Space, Table} from 'antd';
+import {Button, Space, Table} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import {remove} from '../slices/productSlice';
 import {addToCart as addToCartAction} from '../slices/cartSlice';
@@ -35,7 +35,7 @@ const ProductTable = () => {
             key: 'action',
             render: (_, product) => (
                 <Space size="middle" onClick={() => dispatch(remove(product))}>
-                    <a>Удалить</a>
+                    <Button type="primary" style={{backgroundColor: 'grey'}}>Удалить</Button>
                 </Space>
             ),
         },
@@ -44,7 +44,7 @@ const ProductTable = () => {
             key: 'action',
             render: (_, product) => (
                 <Space size="middle" onClick={() => handleAddToCart(product.id)}>
-                    <a>Добавить в корзину</a>
+                    <Button type="primary" style={{backgroundColor: '#001529'}}>Купить</Button>
                 </Space>
             ),
         },
