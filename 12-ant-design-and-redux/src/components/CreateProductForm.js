@@ -78,10 +78,10 @@ const CreateProductForm = () => {
             </Form.Item>
 
             <Form.Item {...tailLayout}>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" style={{backgroundColor: '#001529'}} htmlType="submit">
                     Создать
                 </Button>
-                <Button style={{marginLeft: '5px'}} htmlType="button" onClick={onReset}>
+                <Button type="primary" style={{marginLeft: '5px', backgroundColor: 'grey'}} htmlType="button" onClick={onReset}>
                     Очистить
                 </Button>
             </Form.Item>

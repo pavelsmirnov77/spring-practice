@@ -1,11 +1,12 @@
-import {Badge, InputNumber, message, Space, Table} from 'antd';
+import {Badge, Button, InputNumber, message, Space, Table} from 'antd';
 import {useSelector, useDispatch} from 'react-redux';
 import {clearCart, removeFromCart, updateCartItemQuantity} from '../slices/cartSlice';
 import {useState} from 'react';
+import {updateQuantity} from "../slices/productSlice";
 
 const Cart = () => {
     const products = useSelector(state => state.products.products);
-    const cartItems = useSelector((state) => state.cart.items);
+    const cartItems = useSelector((state) => state.carts.cartItems);
     const dispatch = useDispatch();
 
     const currentDate = new Date().toLocaleString();
@@ -17,28 +18,34 @@ const Cart = () => {
     };
 
     const handlePayment = () => {
-        if (cartItems.length === 0) {
-            message.error('Корзина пуста. Невозможно произвести оплату.');
-            return;
+        const insufficientQuantityItems = cartItems.filter(
+            (cartItem) =>
+                cartItem.quantity >
+                (products.find((product) => product.id === cartItem.id)?.quantity || 0)
+        );
+
+        if(cartItems.length === 0) {
+            message.error(
+                "Корзина пустая."
+            );
         }
 
-        const paymentSuccessful = cartItems.every((cartItem) => {
-            const product = products.find((p) => p.id === cartItem.id);
-
-            if (product && cartItem.quantity <= product.quantity) {
-                return true;
-            }
-
-            return false;
-        });
-
-        if (paymentSuccessful) {
-            dispatch(clearCart());
-            message.success('Оплата прошла успешно!');
+        else if (insufficientQuantityItems.length > 0) {
+            message.error(
+                "Ошибка при оплате. Количество товаров в корзине превышает доступное количество."
+            );
         } else {
-            message.error('Ошибка оплаты. Некоторые товары в корзине превышают доступное количество.');
+            cartItems.forEach((cartItem) => {
+                const availableQuantity = products.find((product) => product.id === cartItem.id)?.quantity || 0;
+                const newQuantity = availableQuantity - cartItem.quantity;
+                dispatch(updateQuantity({id: cartItem.id, quantity: newQuantity}));
+            });
+
+            dispatch(clearCart());
+            message.success("Оплата прошла успешно!");
         }
     };
+
 
     const [editingItemId, setEditingItemId] = useState(null);
 
@@ -55,7 +62,7 @@ const Cart = () => {
                 key: 'name',
             },
             {
-                title: 'Количество',
+                title: 'Кол-во',
                 dataIndex: 'quantity',
                 key: 'quantity',
                 render: (text, record) =>
@@ -70,7 +77,7 @@ const Cart = () => {
                     ),
             },
             {
-                title: 'Стоимость',
+                title: 'Цена',
                 dataIndex: 'cost',
                 key: 'cost',
             },
@@ -81,7 +88,7 @@ const Cart = () => {
                     const product = products.find((p) => p.id === record.itemId);
                     const status = product && record.quantity <= product.quantity ? 'В наличии' : 'Не в наличии';
 
-                    return <Badge status={status === 'В наличии' ? 'success' : 'error'} text={status} />;
+                    return <Badge status={status === 'В наличии' ? 'success' : 'error'} text={status}/>;
                 },
             },
             {
@@ -90,14 +97,20 @@ const Cart = () => {
                 key: 'operation',
                 render: (_, record) => (
                     <Space size="middle">
-                        <a onClick={() => dispatch(removeFromCart(record.itemId))}>Удалить</a>
+                        <Button style={{backgroundColor: 'grey', color: 'white'}} onClick={() =>
+                            dispatch(removeFromCart(record.itemId))}>
+                            Удалить
+                        </Button>
                         {editingItemId === record.itemId ? (
                             <>
-                                <a onClick={() => handleSave(record)}>Ок</a>
-                                <a onClick={() => handleCancel()}>Отмена</a>
+                                <Button style={{backgroundColor: '#001529', color: 'white'}}
+                                        onClick={() => handleSave(record)}>Ок</Button>
+                                <Button style={{backgroundColor: 'grey', color: 'white'}}
+                                        onClick={() => handleCancel()}>Отмена</Button>
                             </>
                         ) : (
-                            <a onClick={() => handleEdit(record)}>Изменить</a>
+                            <Button style={{backgroundColor: '#001529', color: 'white'}}
+                                    onClick={() => handleEdit(record)}>Изменить</Button>
                         )}
                     </Space>
                 ),
@@ -150,7 +163,11 @@ const Cart = () => {
         {
             title: 'Оплата',
             key: 'operation',
-            render: () => <a onClick={handlePayment}>Оплатить</a>,
+            render: () => <Button
+                style={{backgroundColor: 'darkgreen', color: 'white'}}
+                onClick={handlePayment}>
+                Оплатить
+            </Button>,
         },
     ];
 
