@@ -1,13 +1,13 @@
 import { AutoComplete, Input } from 'antd';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchProductByName } from '../slices/productSlice';
+import ProductService from "../services/productService";
 
 const Search = () => {
     const allProducts = useSelector((state) => state.products.products);
     const dispatch = useDispatch();
     const [options, setOptions] = useState([]);
-    const [searchResults, setSearchResults] = useState([]);
+    const [setSearchResults] = useState([]);
 
     const searchResult = (query) => {
         let searchProducts;
@@ -30,7 +30,7 @@ const Search = () => {
     };
 
     const handleSearch = (value) => {
-        dispatch(searchProductByName(value.toString()));
+        ProductService.getProducts(value, dispatch);
     };
 
     return (
