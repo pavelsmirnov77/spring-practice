@@ -5,21 +5,16 @@ export const productSlice = createSlice({
     initialState: {
         products: [],
         cart: [],
+        filteredProducts: [],
     },
     reducers: {
         set: (state, action) => {
             state.products = action.payload;
         },
-        updateQuantity: (state, action) => {
-            const { id, quantity } = action.payload;
-            const product = state.products.find((product) => product.id === id);
-            if (product) {
-                product.quantity = quantity;
-            }
-        },
     },
 });
 
-export const {updateQuantity, set} = productSlice.actions;
+export const {set} = productSlice.actions;
 
 export default productSlice.reducer;
+

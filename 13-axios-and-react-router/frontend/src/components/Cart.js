@@ -3,7 +3,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {removeFromCart, updateCartItemQuantity, makePayment, getCartProducts} from '../services/cartService';
 import {clearCart} from '../slices/cartSlice'
 import {useState, useEffect} from 'react';
-import {updateQuantity} from '../slices/productSlice';
 
 const Cart = () => {
     const products = useSelector(state => state.products.products);
@@ -31,28 +30,21 @@ const Cart = () => {
 
         if (cartItems.length === 0) {
             message.error("Корзина пустая.");
-        } else if (insufficientQuantityItems.length > 0) {
+        } else {
             message.error(
                 "Ошибка при оплате. Количество товаров в корзине превышает доступное количество."
             );
-        } else {
-            cartItems.forEach((cartItem) => {
-                const availableQuantity =
-                    products.find((product) => product.id === cartItem.id)?.quantity || 0;
-                const newQuantity = availableQuantity - cartItem.quantity;
-                dispatch(updateQuantity(cartItem.id, newQuantity));
-            });
-
-            dispatch(makePayment())
-                .then(() => {
-                    dispatch(clearCart());
-                    message.success("Оплата прошла успешно!");
-                })
-                .catch((error) => {
-                    message.error("Ошибка при оплате.");
-                    console.error(error);
-                });
         }
+
+        dispatch(makePayment())
+            .then(() => {
+                dispatch(clearCart());
+                message.success("Оплата прошла успешно!");
+            })
+            .catch((error) => {
+                message.error("Ошибка при оплате.");
+                console.error(error);
+            });
     };
 
     const [editingItemId, setEditingItemId] = useState(null);

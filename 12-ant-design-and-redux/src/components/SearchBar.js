@@ -1,27 +1,37 @@
-import {AutoComplete, Input} from 'antd';
-import {useState} from 'react';
-import {useSelector} from "react-redux";
+import { AutoComplete, Input } from 'antd';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { searchProductByName } from '../slices/productSlice';
 
 const Search = () => {
-    const products = useSelector((state) => state.products.products)
+    const allProducts = useSelector((state) => state.products.products);
+    const dispatch = useDispatch();
     const [options, setOptions] = useState([]);
-    const handleSearch = (value) => {
-        setOptions(value ? searchResult(value) : []);
-    };
-    const onSelect = (value) => {
-        console.log('onSelect', value);
-    };
+    const [searchResults, setSearchResults] = useState([]);
 
     const searchResult = (query) => {
-        return products
-            .filter(product => product.name.toLowerCase().includes(query.toLowerCase()))
-            .map(product => {
-                return {
-                    value: product.key,
-                    label: <div key={product.key}>{product.name}</div>
-                }
-            })
-    }
+        let searchProducts;
+        if (query) {
+            searchProducts = allProducts.filter((product) =>
+                product.name.toLowerCase().includes(query.toLowerCase())
+            );
+        } else {
+            searchProducts = allProducts;
+        }
+
+        setSearchResults(searchProducts);
+
+        const productOptions = searchProducts.map((product) => ({
+            value: product.name,
+            label: <div key={product.id}>{product.name}</div>,
+        }));
+
+        setOptions(productOptions);
+    };
+
+    const handleSearch = (value) => {
+        dispatch(searchProductByName(value.toString()));
+    };
 
     return (
         <AutoComplete
@@ -30,11 +40,16 @@ const Search = () => {
                 width: 300,
             }}
             options={options}
-            onSelect={onSelect}
-            onSearch={handleSearch}
+            onSearch={searchResult}
         >
-            <Input.Search size="large" placeholder="Введите название продукта" enterButton/>
+            <Input.Search
+                size="large"
+                placeholder="Введите название"
+                enterButton
+                onSearch={handleSearch}
+            />
         </AutoComplete>
     );
 };
+
 export default Search;

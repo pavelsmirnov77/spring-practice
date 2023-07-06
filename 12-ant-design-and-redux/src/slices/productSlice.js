@@ -36,6 +36,7 @@ export const productSlice = createSlice({
             },
         ],
         cart: [],
+        filteredProducts: [],
     },
     reducers: {
         push: (state, action) => {
@@ -49,15 +50,26 @@ export const productSlice = createSlice({
         },
 
         updateQuantity: (state, action) => {
-            const { id, quantity } = action.payload;
+            const {id, quantity} = action.payload;
             const product = state.products.find((product) => product.id === id);
             if (product) {
                 product.quantity = quantity;
             }
         },
+        searchProductByName: (state, action) => {
+            const query = action.payload.toLowerCase();
+            if (query == null) {
+                state.filteredProducts = state.products;
+            } else {
+                state.filteredProducts = state.products.filter((product) =>
+                    product.name.toLowerCase().includes(query))
+                    state.products = state.filteredProducts;
+            }
+        },
+
     },
 });
 
-export const {push, remove, updateQuantity} = productSlice.actions;
+export const {push, remove, updateQuantity, searchProductByName} = productSlice.actions;
 
 export default productSlice.reducer;
