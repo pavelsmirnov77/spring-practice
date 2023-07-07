@@ -1,0 +1,17 @@
+###Добавление клиента
+POST localhost:8081/users
+Content-Type: application/json
+
+{
+  "email": "123@yandex.ru",
+  "login": "pavel123",
+  "password": "123",
+  "username": "Павел"
+}
+
+###Получение клиента
+GET localhost:8081/users/1
+Content-Type: application/json
+
+###Удаление клиента
+DELETE localhost:8081/users/7
