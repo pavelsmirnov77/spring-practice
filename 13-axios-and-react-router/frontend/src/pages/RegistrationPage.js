@@ -1,19 +1,28 @@
-import {Button, Card, Form, Input} from "antd";
+import {Button, Card, Form, Input, message} from "antd";
 import React from "react";
 import {LockOutlined, MailOutlined, UserAddOutlined, UserOutlined} from "@ant-design/icons";
 import UserService from "../services/userService";
+import {useNavigate} from "react-router-dom";
 
 const RegistrationPage = () => {
     const [form] = Form.useForm();
+    const navigate = useNavigate();
     const onFinish = (values) => {
         UserService.register(values)
+            .then(() => {
+                message.success('Вы успешно зарегистрированы');
+                navigate('/auth');
+            })
+            .catch((error) => {
+                message.error('Ошибка при регистрации');
+                console.error(error);
+            });
     };
 
     return (
         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh'}}>
             <Card title="Регистрация" style={{width: 400}}>
-                <Form form={form} layout="vertical" name="registration"
-                      onFinish={onFinish}>
+                <Form form={form} layout="vertical" name="registration" onFinish={onFinish}>
                     <Form.Item name="name" label="Имя" rules={[{required: true, message: 'Введите имя'}]}>
                         <Input prefix={<UserOutlined/>} placeholder="Имя"/>
                     </Form.Item>

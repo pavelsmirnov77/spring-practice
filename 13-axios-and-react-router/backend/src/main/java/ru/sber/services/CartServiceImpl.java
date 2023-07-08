@@ -9,9 +9,9 @@ import ru.sber.repositories.CartRepository;
 import ru.sber.repositories.ProductRepository;
 import ru.sber.repositories.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Сервис для взаимодействия с корзиной пользователя
@@ -34,12 +34,7 @@ public class CartServiceImpl implements CartService {
     public boolean addToCart(long userId, long productId) {
         Optional<Cart> cart = cartRepository.findCartByProduct_IdAndClient_Id(productId, userId);
 
-        if (cart.isPresent()) {
-            Cart shoppingCart = cart.get();
-            shoppingCart.setQuantity(shoppingCart.getQuantity() + 1);
-            cartRepository.save(shoppingCart);
-            return true;
-        } else {
+        Cart shoppingCart = cart.orElseGet(() -> {
             Optional<User> user = userRepository.findById(userId);
             Optional<Product> product = productRepository.findById(productId);
 
@@ -47,13 +42,21 @@ public class CartServiceImpl implements CartService {
                 Cart newCart = new Cart();
                 newCart.setClient(user.get());
                 newCart.setProduct(product.get());
-                newCart.setQuantity(1);
-                cartRepository.save(newCart);
-                return true;
+                newCart.setQuantity(0);
+                return newCart;
             }
+
+            return null;
+        });
+
+        if (shoppingCart != null) {
+            shoppingCart.setQuantity(shoppingCart.getQuantity() + 1);
+            cartRepository.save(shoppingCart);
+            return true;
         }
 
         return false;
+
     }
 
 
@@ -90,17 +93,20 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<Product> getListOfProductsInCart(long userId) {
         List<Cart> carts = cartRepository.findCartByClient_Id(userId);
-        List<Product> productsInCart = new ArrayList<>();
-        for (Cart cart : carts) {
-            Product product = new Product();
-            product.setId(cart.getProduct().getId());
-            product.setName(cart.getProduct().getName());
-            product.setPrice(cart.getProduct().getPrice());
-            product.setQuantity(cart.getQuantity());
-            productsInCart.add(product);
-        }
+
+        List<Product> productsInCart = carts.stream()
+                .map(cart -> {
+                    Product product = new Product();
+                    product.setId(cart.getProduct().getId());
+                    product.setName(cart.getProduct().getName());
+                    product.setPrice(cart.getProduct().getPrice());
+                    product.setQuantity(cart.getQuantity());
+                    return product;
+                })
+                .collect(Collectors.toList());
 
         return productsInCart;
+
     }
 
     @Override
