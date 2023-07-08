@@ -8,17 +8,15 @@ import ru.sber.entities.Product;
 import ru.sber.services.ProductService;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
-/**
- * Контроллер для обработки запросов к товарам
- */
 @Slf4j
 @RestController
-@RequestMapping("products")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("products")
 public class ProductController {
+
     private final ProductService productService;
 
     @Autowired
@@ -26,40 +24,85 @@ public class ProductController {
         this.productService = productService;
     }
 
+    /**
+     * Добавляет новый товар
+     *
+     * @param product Добавляемый товар
+     * @return Возвращает статус добавления товара
+     */
     @PostMapping
-    public ResponseEntity<?> addProduct(@RequestBody Product product) throws URISyntaxException {
-        log.info("Добавляется товар {}", product);
-        long id = productService.createProduct(product);
-        return ResponseEntity
-                .created(new URI("http://localhost:8080/products/" + id))
-                .build();
+    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+        long productId = productService.addNewProduct(product);
+        log.info("Добавление товара {}", product);
+        return ResponseEntity.created(URI.create("products/" + productId)).build();
     }
 
+    /**
+     * Выдает все товары по фильтру
+     *
+     * @param name Название товара (фильтр)
+     * @return Возвращает список найденных товаров
+     */
     @GetMapping
-    public List<Product> getProduct(@RequestParam(required = false) String productName) {
-        log.info("Получение товаров");
+    public List<Product> getProducts(@RequestParam(required = false) String name) {
 
-        return productService.findProductByName(productName);
-    }
-
-    @PutMapping
-    public Product updateProduct(@RequestBody Product product) {
-        log.info("Обновляется товар: {}", product);
-        productService.changeProduct(product);
-
-        return product;
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable long id) {
-        boolean isDeleted = productService.deleteProductById(id);
-
-        if (isDeleted) {
-            log.info("Удаление товара с id {} прошло успешно", id);
-            return ResponseEntity.noContent().build();
+        if (name == null) {
+            name = "";
+            log.info("Вывод всех товаров");
         } else {
-            log.info("Товар с id {} не найден", id);
+            log.info("Поиск товаров по имени {}", name);
+        }
+
+        return productService.findAllByName(name);
+    }
+
+    /**
+     * Получение товара по id
+     *
+     * @param id Идентификатор для поиска
+     * @return Возвращает найденный товар
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProducts(@PathVariable long id) {
+        log.info("Получение товара по id");
+        Optional<Product> product = productService.findById(id);
+
+        if (product.isPresent()) {
+            return ResponseEntity.ok().body(product.get());
+        } else {
             return ResponseEntity.notFound().build();
         }
     }
+
+    /**
+     * Обновление информации о товаре
+     *
+     * @param product Информация об обновленном товаре
+     * @return Возвращает обновленный товар
+     */
+    @PutMapping
+    public ResponseEntity<?> updateProduct(@RequestBody Product product) {
+        productService.update(product);
+        log.info("Обновление информации о товаре");
+        return ResponseEntity.ok().body(product);
+    }
+
+    /**
+     * Удаление товара по id
+     *
+     * @param id Идентификатор товара
+     * @return Возвращает статус удаления товара
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable long id) {
+        log.info("Удаление продукта по id");
+        boolean isDeleted = productService.deleteById(id);
+
+        if (isDeleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
