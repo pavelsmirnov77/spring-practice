@@ -1,8 +1,8 @@
-import {Button, Card, Form, Input} from 'antd';
+import {Button, Card, Form, Input, message} from 'antd';
 import {UserOutlined, LockOutlined, LoginOutlined} from '@ant-design/icons';
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import authService from "../services/auth-service";
+import authService from "../services/auth.service";
 import {login} from "../slices/authSlice";
 
 const AuthForm = () => {
@@ -16,6 +16,12 @@ const AuthForm = () => {
             console.log(user)
             dispatch(login(user))
             navigate("/")
+        }, (error) => {
+            const _content = (error.response && error.response.data)
+            error.message ||
+            error.toString();
+            console.log(_content);
+            message.error("Неправильный логин или пароль");
         })
     };
 
@@ -24,7 +30,7 @@ const AuthForm = () => {
             <Card title="Авторизация" style={{width: 500}}>
                 <Form name="normal_login" form={form} layout="vertical" onFinish={onFinish}>
                     <Form.Item
-                        name="login"
+                        name="username"
                         label="Логин"
                         rules={[{required: true, message: 'Введите логин'}]}
                     >

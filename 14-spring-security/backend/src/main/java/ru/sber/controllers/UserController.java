@@ -34,8 +34,9 @@ public class UserController {
      * Регистрирует нового пользователя
      *
      * @param user Пользователь
-     * @return id зарегистрированного пользователя
+     * @return Возвращает идентификатор зарегистрированного пользователя
      */
+
     @PostMapping
     public ResponseEntity<?> signUp(@Valid @RequestBody User user) {
         long userId = userService.signUp(user);
@@ -46,11 +47,11 @@ public class UserController {
     /**
      * Находит пользователя по идентификатору
      *
-     * @param id id пользователя
-     * @return пользователь с ограниченным количеством полей
+     * @param id Уникальный идентификатор пользователя
+     * @return Возвращает пользователя с ограниченным количеством полей
      */
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
-    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserResponse> getUserById(@PathVariable long id) {
 
         log.info("Выводим данные о пользователе с id: {}", id);
@@ -67,10 +68,10 @@ public class UserController {
     }
 
     /**
-     * Удаляет пользователя по id
+     * Удаляет пользователя по идентификатору
      *
-     * @param id id пользователя
-     * @return статус выполнения
+     * @param id Уникальный идентификатор пользователя
+     * @return Возвращает статус выполнения
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable long id) {

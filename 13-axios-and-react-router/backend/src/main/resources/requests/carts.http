@@ -1,0 +1,14 @@
+###Добавление товара в корзину
+POST localhost:8081/cart/1/product/1
+Content-Type: application/json
+
+###Обновление количества товара в корзине
+PUT localhost:8081/cart/1/product/5
+Content-Type: application/json
+
+{
+  "quantity": 6
+}
+
+###Удаление товара из корзины
+DELETE localhost:8081/cart/1/product/1

@@ -1,15 +1,16 @@
-import {Button, Space, Table, message} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Button, Space, Table, message, Input} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import ProductService from '../services/productService';
-import {useEffect} from "react";
-import SearchBar from "../components/SearchBar";
-import CartService from "../services/cartService";
+import CartService from '../services/cartService';
 
 const ProductTable = () => {
-    const products = useSelector((state) => state.products.products);
+    const allProducts = useSelector((state) => state.products.products);
     const dispatch = useDispatch();
-
     const userId = useSelector((state) => state.users.user.id);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const user = useSelector((state) => state.auth.user);
 
     useEffect(() => {
         getProducts();
@@ -20,26 +21,44 @@ const ProductTable = () => {
     };
 
     const handleDeleteProduct = (productId) => {
-        ProductService.deleteProduct(productId, dispatch)
-            .then(() => {
-                message.success({
-                    content: 'Продукт успешно удален',
-                    duration: 3,
+        if (user.roles.includes("ROLE_ADMIN") && isLoggedIn) {
+            ProductService.deleteProduct(productId, dispatch)
+                .then(() => {
+                    message.success({
+                        content: 'Продукт успешно удален',
+                        duration: 3,
+                    });
+                })
+                .catch((error) => {
+                    message.error({
+                        content: 'Ошибка при удалении продукта',
+                        duration: 3,
+                    });
+                    console.error(error);
                 });
-            })
-            .catch((error) => {
-                message.error({
-                    content: 'Ошибка при удалении продукта',
-                    duration: 3,
-                });
-                console.error(error);
-            });
+        } else {
+            message.error("У вас недостаточно прав для удаления товара")
+        }
+
     };
 
     const handleAddToCart = (product) => {
-        CartService.addToCart(userId, product.id, dispatch);
-        message.success("Товар успешно добавлен в корзину")
+        if (isLoggedIn) {
+            CartService.addToCart(userId, product.id, dispatch);
+            message.success('Товар успешно добавлен в корзину');
+        } else {
+            message.error("Войдите в аккаунт, чтобы добавить товар в корзину")
+        }
     };
+
+    const handleSearch = (value) => {
+        const searchProducts = allProducts.filter((product) =>
+            product.name.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredProducts(searchProducts);
+    };
+
+    const products = filteredProducts.length > 0 ? filteredProducts : allProducts;
 
     const columns = [
         {
@@ -87,7 +106,13 @@ const ProductTable = () => {
 
     return (
         <div>
-            <SearchBar/>
+            <Input.Search
+                placeholder="Поиск по названию"
+                enterButton
+                allowClear
+                onSearch={handleSearch}
+                style={{marginBottom: '16px'}}
+            />
             <Table
                 rowKey="id"
                 columns={columns}

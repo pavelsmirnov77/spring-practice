@@ -13,11 +13,11 @@ import java.util.Optional;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
     /**
-     * Находит корзину по id товара и id пользователя
+     * Находит в БД корзину по id товара и id клиента
      *
-     * @param productId id товара
-     * @param userId    id пользователя
-     * @return найденную корзину
+     * @param productId Уникальный идентификатор товара
+     * @param userId    Уникальный идентификатор пользователя
+     * @return Возвращает найденную корзину
      */
     Optional<Cart> findCartByProduct_IdAndClient_Id(long productId, long userId);
 
@@ -26,7 +26,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
      *
      * @param userId Уникальный идентификатор пользователя
      */
-    void deleteCartByClientId(long userId);
+    void deleteCartByClient_Id(long userId);
 
     /**
      * Находит в БД корзину по id клиента

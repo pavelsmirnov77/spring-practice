@@ -6,11 +6,11 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * Сущность клиента банка
+ * Сущность банковской карты
  */
 @Data
 @AllArgsConstructor
-public class ClientBank {
-    private long clientId;
+public class BankCard {
+    private long number;
     private BigDecimal balance;
 }

@@ -7,7 +7,7 @@ import PaymentService from "../services/paymentService";
 
 const CartPage = () => {
     const userId = useSelector((state) => state.users.user.id);
-    const cartItems = useSelector((state) => state.carts.cartItems);
+    const cartItems = useSelector((state) => state.cart.cartItems);
     const dispatch = useDispatch();
     const products = useSelector((state) => state.products.products);
 
@@ -23,6 +23,8 @@ const CartPage = () => {
         CartService.deleteFromCart(userId, productId, dispatch)
             .then(() => {
                 message.success("Товар успешно удален из корзины");
+                const updatedData = data.filter((item) => item.itemId !== productId);
+                setData(updatedData);
             })
             .catch((error) => {
                 message.error("Ошибка при удалении товара из корзины");
@@ -32,18 +34,77 @@ const CartPage = () => {
 
     const handleUpdateQuantity = (productId, quantity) => {
         const newProductAmount = {
-            amount: quantity,
+            quantity: quantity,
         };
-        CartService.updateAmount(userId, productId, newProductAmount, dispatch);
+        CartService.updateAmount(userId, productId, newProductAmount, dispatch)
+            .then(() => {
+                const updatedData = data.map((item) =>
+                    item.itemId === productId ? {...item, quantity} : item
+                );
+                setData(updatedData);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     const handlePayment = () => {
-        const payment = {cardNumber: 999999, userId: userId}
+        const payment = {cardNumber: 999999, userId: userId};
         PaymentService.pay(payment, dispatch)
-    }
-
+            .then(() => {
+                CartService.clearCart(userId, dispatch);
+                message.success("Оплата прошла");
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
 
     const [editingItemId, setEditingItemId] = useState(null);
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const newData = cartItems.map((item) => ({
+            key: item.id,
+            itemId: item.id,
+            date: currentDate,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            editing: false,
+        }));
+        setData(newData);
+    }, [cartItems, currentDate]);
+
+    const handleEdit = (record) => {
+        setEditingItemId(record.itemId);
+    };
+
+    const handleSave = (record) => {
+        setEditingItemId(null);
+        const newData = data.map((item) =>
+            item.key === record.key ? {...item, quantity: record.quantity} : item
+        );
+        setData(newData);
+        handleUpdateQuantity(record.itemId, record.quantity);
+    };
+
+    const handleQuantityChange = (userId, itemId, value) => {
+        const newData = data.map((item) => {
+            if (item.itemId === itemId) {
+                const updatedItem = {...item, quantity: value};
+                handleUpdateQuantity(itemId, value);
+                return updatedItem;
+            }
+            return item;
+        });
+        setData(newData);
+    };
+
+
+    const handleCancel = () => {
+        setEditingItemId(null);
+    };
 
     const expandedRowRender = () => {
         const columns = [
@@ -66,7 +127,7 @@ const CartPage = () => {
                         <InputNumber
                             min={1}
                             defaultValue={text}
-                            onChange={(value) => handleUpdateQuantity(record.key, value)}
+                            onChange={(value) => handleQuantityChange(userId, record.itemId, value)}
                         />
                     ) : (
                         text
@@ -82,14 +143,15 @@ const CartPage = () => {
                     const totalPrice = itemPrice * record.quantity;
 
                     return totalPrice.toFixed(2);
-                }
+                },
             },
             {
                 title: 'Статус',
                 key: 'state',
                 render: (_, record) => {
                     const product = products.find((p) => p.id === record.itemId);
-                    const status = product && record.quantity <= product.quantity ? 'В наличии' : 'Не в наличии';
+                    const status =
+                        product && record.quantity <= product.quantity ? 'В наличии' : 'Не в наличии';
 
                     return <Badge status={status === 'В наличии' ? 'success' : 'error'} text={status}/>;
                 },
@@ -100,49 +162,39 @@ const CartPage = () => {
                 key: 'operation',
                 render: (_, record) => (
                     <Space size="middle">
-                        <Button style={{backgroundColor: 'grey', color: 'white'}} onClick={() =>
-                            handleRemoveProduct(record.itemId)}>
+                        <Button
+                            style={{backgroundColor: 'grey', color: 'white'}}
+                            onClick={() => handleRemoveProduct(record.itemId)}
+                        >
                             Удалить
                         </Button>
-                        {editingItemId === record.itemId ? (
+                        {editingItemId === record.key ? (
                             <>
-                                <Button style={{backgroundColor: '#001529', color: 'white'}}
-                                        onClick={() => handleSave(record)}>Ок</Button>
-                                <Button style={{backgroundColor: 'grey', color: 'white'}}
-                                        onClick={() => handleCancel()}>Отмена</Button>
+                                <Button
+                                    style={{backgroundColor: "#001529", color: "white"}}
+                                    onClick={() => handleSave(record)}
+                                >
+                                    Ок
+                                </Button>
+                                <Button
+                                    style={{backgroundColor: 'grey', color: 'white'}}
+                                    onClick={() => handleCancel()}
+                                >
+                                    Отмена
+                                </Button>
                             </>
                         ) : (
-                            <Button style={{backgroundColor: '#001529', color: 'white'}}
-                                    onClick={() => handleEdit(record)}>Изменить</Button>
+                            <Button
+                                style={{backgroundColor: '#001529', color: 'white'}}
+                                onClick={() => handleEdit(record)}
+                            >
+                                Изменить
+                            </Button>
                         )}
                     </Space>
                 ),
-
             },
         ];
-
-        const data = cartItems.map((item) => ({
-            key: item.id,
-            itemId: item.id,
-            date: currentDate,
-            name: item.name,
-            quantity: item.quantity,
-            cost: item.cost,
-            editing: false,
-        }));
-
-        const handleEdit = (record) => {
-            setEditingItemId(record.itemId);
-        };
-
-        const handleSave = (record) => {
-            setEditingItemId(null);
-            handleUpdateQuantity(record.itemId, record.quantity);
-        };
-
-        const handleCancel = () => {
-            setEditingItemId(null);
-        };
 
         return <Table columns={columns} dataSource={data} pagination={false}/>;
     };
@@ -166,11 +218,11 @@ const CartPage = () => {
         {
             title: 'Оплата',
             key: 'operation',
-            render: () => <Button
-                style={{backgroundColor: 'darkgreen', color: 'white'}}
-                onClick={handlePayment}>
-                Оплатить
-            </Button>,
+            render: () => (
+                <Button style={{backgroundColor: 'darkgreen', color: 'white'}} onClick={handlePayment}>
+                    Оплатить
+                </Button>
+            ),
         },
     ];
 

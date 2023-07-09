@@ -1,85 +1,65 @@
 import axios from "axios";
-import {setCartProducts} from "../slices/cartSlice";
+import UserService from "./userService";
+import {setCart} from "../slices/productsCartSlice";
 
-const API_URL = "http://localhost:8081/carts";
+const API_URL = "http://localhost:8081/cart";
 
-export const getCartProducts = (cartId) => {
-    return (dispatch) => {
-        return axios.get(`${API_URL}/${cartId}`)
-            .then((response) => {
-                dispatch(setCartProducts(response.data));
-            })
-            .catch((error) => {
-                const errorMessage = (error.response && error.response.data) || error.message || error.toString();
-                console.error(errorMessage);
-                dispatch(setCartProducts([]));
-            });
-    };
+const addToCart = (userId, productId, dispatch) => {
+
+    return axios.post(`${API_URL}/${userId}/product/${productId}`, {quantity: 1}).then(
+        () => {
+            UserService.getUser(userId, dispatch)
+        },
+        (error) => {
+            const _content = (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+
+            console.error(_content)
+        });
 };
 
-export const addProductToCart = (cartId, productId) => {
-    return (dispatch) => {
-        return axios.post(`${API_URL}/${cartId}/${productId}`)
-            .then(() => {
-                dispatch(getCartProducts(cartId));
-            })
-            .catch((error) => {
-                const errorMessage = (error.response && error.response.data) || error.message || error.toString();
-                console.error(errorMessage);
-            });
-    };
+const updateAmount = (userId, productId, quantity, dispatch) => {
+    return axios.put(`${API_URL}/${userId}/product/${productId}`, quantity).then(
+        () => {
+            UserService.getUser(userId, dispatch)
+        },
+        (error) => {
+            const _content = (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+
+            console.error(_content)
+        });
 };
 
-export const updateCartItemQuantity = (cartId, productId, quantity) => {
-    return (dispatch) => {
-        return axios.put(`${API_URL}/${cartId}/${productId}?quantity=${quantity}`)
-            .then(() => {
-                dispatch(getCartProducts(cartId));
-            })
-            .catch((error) => {
-                const errorMessage = (error.response && error.response.data) || error.message || error.toString();
-                console.error(errorMessage);
-            });
-    };
+const deleteFromCart = (userId, productId, dispatch) => {
+    return axios.delete(`${API_URL}/${userId}/product/${productId}`)
+        .then(() => {
+            UserService.getUser(userId, dispatch);
+        })
+        .catch((error) => {
+            const _content =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+
+            console.error(_content);
+        });
 };
 
-export const removeFromCart = (cartId, productId) => {
+const clearCart = () => {
     return (dispatch) => {
-        return axios.delete(`${API_URL}/${cartId}/${productId}`)
-            .then(() => {
-                dispatch(getCartProducts(cartId));
-            })
-            .catch((error) => {
-                const errorMessage = (error.response && error.response.data) || error.message || error.toString();
-                console.error(errorMessage);
-            });
+        dispatch(setCart([]));
     };
-};
+}
 
-export const makePayment = (cartId) => {
-    return (dispatch) => {
-        return axios.post(`${API_URL}/${cartId}/payment`)
-            .then((response) => {
-                const paymentStatus = response.data.status;
-                if (paymentStatus === "success") {
-                    dispatch(getCartProducts(cartId));
-                } else {
-                    throw new Error("Ошибка оплаты");
-                }
-            })
-            .catch((error) => {
-                const errorMessage = (error.response && error.response.data) || error.message || error.toString();
-                console.error(errorMessage);
-            });
-    };
-};
 
 const cartService = {
-    getCartProducts,
-    addProductToCart,
-    updateCartItemQuantity,
-    removeFromCart,
-    makePayment
+    addToCart,
+    deleteFromCart,
+    updateAmount,
+    clearCart
 };
 
-export default cartService;
+export default cartService

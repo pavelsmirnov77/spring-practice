@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 /**
- * Сущность корзины с товарами
+ * Корзина с товарами
  */
 @Entity
 @Data

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.sber.entities.Cart;
 import ru.sber.entities.Product;
 import ru.sber.services.CartService;
-import ru.sber.services.ProductService;
 
 import java.net.URI;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -18,53 +18,50 @@ import java.net.URI;
 @RequestMapping("cart")
 public class CartController {
 
-    CartService cartService;
-    ProductService productService;
+    private final CartService cartService;
 
     @Autowired
-    public CartController(CartService cartService, ProductService productService) {
+    public CartController(CartService cartService) {
         this.cartService = cartService;
-        this.productService = productService;
     }
 
     /**
      * Добавляет товар в корзину
      *
-     * @param idClient  id клиента
-     * @param idProduct id товара
+     * @param clientId  id клиента
+     * @param productId id товара
      * @return корзину с добавленным товаром
      */
-    @PostMapping("/{idClient}/products/{idProduct}")
-    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Cart> addProductToCart(@PathVariable long idClient, @PathVariable Long idProduct, @RequestBody Product product) {
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PostMapping("/{clientId}/product/{productId}")
+    public ResponseEntity<Cart> addProductToCart(@PathVariable long clientId, @PathVariable Long productId, @RequestBody Product product) {
 
-        log.info("Добавление в корзину товара с id: {}", idProduct);
+        log.info("Добавление в корзину товара с id: {}", productId);
 
-        boolean recordInserted = cartService.addToCart(idClient, idProduct);
+        boolean recordInserted = cartService.addToCart(clientId, productId);
 
         if (recordInserted) {
-            return ResponseEntity.created(URI.create("cart/" + idClient + "/product/" + idProduct)).build();
+            return ResponseEntity.created(URI.create("cart/" + clientId + "/product/" + productId)).build();
         } else {
             return ResponseEntity.notFound().build();
         }
-
     }
 
     /**
      * Изменяет количество товара в корзине
      *
-     * @param idCart    id корзины
-     * @param idProduct id товара
-     * @param product   товар, у которого изменяется количество
-     * @return Возвращает корзину с внесенными изменениями
+     * @param cartId    id корзины
+     * @param productId id продукта
+     * @param product   Товар, у которого изменяется количество
+     * @return корзина с внесенными изменениями
      */
-    @PutMapping("/{idCart}/product/{idProduct}")
-    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Cart> updateProductAmountInCart(@PathVariable long idCart, @PathVariable long idProduct, @RequestBody Product product) {
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PutMapping("/{cartId}/product/{productId}")
+    public ResponseEntity<Cart> updateProductAmountInCart(@PathVariable long cartId, @PathVariable long productId, @RequestBody Product product) {
 
-        log.info("Изменяется количество товара в корзине");
+        log.info("Изменение количества товара в корзине");
 
-        boolean recordUpdated = cartService.updateProductAmount(idCart, idProduct, (int) product.getQuantity());
+        boolean recordUpdated = cartService.updateProductAmount(cartId, productId, product.getQuantity());
 
         if (recordUpdated) {
             return ResponseEntity.ok().build();
@@ -73,20 +70,33 @@ public class CartController {
         }
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @GetMapping("/{cartId}")
+    public ResponseEntity<?> getProducts(@PathVariable long cartId) {
+
+        log.info("Получение корзины пользователя с id {}", cartId);
+
+        List<Product> productsInCart = cartService.getListOfProductsInCart(cartId);
+
+        return ResponseEntity.ok().body(productsInCart);
+
+
+    }
+
     /**
      * Удаляет товар из корзины
      *
-     * @param idCart    Уникальный идентификатор корзины
-     * @param idProduct Уникальный идентификатор продукта
-     * @return Возвращает корзину с внесенными изменениями
+     * @param cartId    id корзины
+     * @param productId id продукта
+     * @return корзина с внесенными изменениями
      */
-    @DeleteMapping("/{idCart}/product/{idProduct}")
-    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteProduct(@PathVariable long idCart, @PathVariable long idProduct) {
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @DeleteMapping("/{cartId}/product/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable long cartId, @PathVariable long productId) {
 
-        log.info("Удаление из корзины товара с id: {}", idProduct);
+        log.info("Удаление из корзины товара с id: {}", productId);
 
-        boolean isDeleted = cartService.deleteProduct(idCart, idProduct);
+        boolean isDeleted = cartService.deleteProduct(cartId, productId);
 
         if (isDeleted) {
             return ResponseEntity.noContent().build();

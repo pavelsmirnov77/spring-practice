@@ -30,10 +30,10 @@ public class ProductController {
      * Добавляет новый товар
      *
      * @param product Добавляемый товар
-     * @return Возвращает статус добавления товара
+     * @return статус добавления товара
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addProduct(@Valid @RequestBody Product product) {
         long productId = productService.addNewProduct(product);
         log.info("Добавление товара {}", product);
@@ -44,7 +44,7 @@ public class ProductController {
      * Выдает все товары по фильтру
      *
      * @param name Название товара (фильтр)
-     * @return Возвращает список найденных товаров
+     * @return список найденных товаров
      */
     @GetMapping
     public List<Product> getProducts(@RequestParam(required = false) String name) {
@@ -83,8 +83,8 @@ public class ProductController {
      * @param product Информация об обновленном товаре
      * @return Возвращает обновленный товар
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateProduct(@Valid @RequestBody Product product) {
         productService.update(product);
         log.info("Обновление информации о товаре");
@@ -97,8 +97,8 @@ public class ProductController {
      * @param id Идентификатор товара
      * @return Возвращает статус удаления товара
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteProduct(@PathVariable long id) {
         log.info("Удаление продукта по id");
         boolean isDeleted = productService.deleteById(id);

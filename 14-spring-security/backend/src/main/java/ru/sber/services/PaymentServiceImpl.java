@@ -55,7 +55,7 @@ public class PaymentServiceImpl implements PaymentService {
         boolean productsNotEnough = checkProductsAmount(productsInCart);
 
         if (productsNotEnough) {
-            throw new ProductsException("Товара нет");
+            throw new ProductsException("Не хватает товара на складе");
         }
 
         long cardNumber = payment.getCardNumber();

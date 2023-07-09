@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ###Удаление товара
-DELETE localhost:8081/products/9
+DELETE localhost:8081/products/1
 
 ###Получение товара
 GET localhost:8081/products/1

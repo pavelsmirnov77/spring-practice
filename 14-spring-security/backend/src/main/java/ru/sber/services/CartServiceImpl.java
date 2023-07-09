@@ -34,12 +34,7 @@ public class CartServiceImpl implements CartService {
     public boolean addToCart(long userId, long productId) {
         Optional<Cart> cart = cartRepository.findCartByProduct_IdAndClient_Id(productId, userId);
 
-        if (cart.isPresent()) {
-            Cart shoppingCart = cart.get();
-            shoppingCart.setQuantity(shoppingCart.getQuantity() + 1);
-            cartRepository.save(shoppingCart);
-            return true;
-        } else {
+        Cart shoppingCart = cart.orElseGet(() -> {
             Optional<User> user = userRepository.findById(userId);
             Optional<Product> product = productRepository.findById(productId);
 
@@ -47,22 +42,29 @@ public class CartServiceImpl implements CartService {
                 Cart newCart = new Cart();
                 newCart.setClient(user.get());
                 newCart.setProduct(product.get());
-                newCart.setQuantity(1);
-                cartRepository.save(newCart);
-                return true;
+                newCart.setQuantity(0);
+                return newCart;
             }
+
+            return null;
+        });
+
+        if (shoppingCart != null) {
+            shoppingCart.setQuantity(shoppingCart.getQuantity() + 1);
+            cartRepository.save(shoppingCart);
+            return true;
         }
 
         return false;
+
     }
 
-
     @Override
-    public boolean updateProductAmount(long userId, long productId, int amount) {
+    public boolean updateProductAmount(long userId, long productId, int quantity) {
         Optional<Cart> cart = cartRepository.findCartByProduct_IdAndClient_Id(productId, userId);
         if (cart.isPresent()) {
             Cart shoppingCart = cart.get();
-            shoppingCart.setQuantity(amount);
+            shoppingCart.setQuantity(quantity);
             cartRepository.save(shoppingCart);
             return true;
         }
@@ -84,7 +86,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void clearCart(long userId) {
-        cartRepository.deleteCartByClientId(userId);
+        cartRepository.deleteCartByClient_Id(userId);
     }
 
     @Override

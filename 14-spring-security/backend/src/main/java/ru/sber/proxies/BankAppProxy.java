@@ -15,9 +15,9 @@ import java.util.List;
 public class BankAppProxy implements BankAppInterfaceProxy {
 
     List<BankCard> cards = new ArrayList<>(List.of(
-            new BankCard(999999, BigDecimal.valueOf(30000)),
-            new BankCard(123444, BigDecimal.valueOf(700)),
-            new BankCard(143456, BigDecimal.valueOf(10500))
+            new BankCard(999999, BigDecimal.valueOf(300000)),
+            new BankCard(222222, BigDecimal.valueOf(70000000)),
+            new BankCard(111111, BigDecimal.valueOf(1000000))
     ));
 
     @Override

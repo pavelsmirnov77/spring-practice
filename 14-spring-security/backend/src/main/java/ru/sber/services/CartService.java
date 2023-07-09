@@ -5,15 +5,15 @@ import ru.sber.entities.Product;
 import java.util.List;
 
 /**
- * Сервис для взаимодействия с корзиной
+ * Сервис для взаимодействия с корзиной пользователя
  */
 public interface CartService {
     /**
      * Добавление товара в корзину
      *
-     * @param userId    id пользователя
-     * @param productId id товара
-     * @return статус добавления товара в корзину
+     * @param userId    Уникальный идентификатор пользователя
+     * @param productId Уникальный идентификатор товара
+     * @return Возвращает статус добавления товара в корзину
      */
     boolean addToCart(long userId, long productId);
 

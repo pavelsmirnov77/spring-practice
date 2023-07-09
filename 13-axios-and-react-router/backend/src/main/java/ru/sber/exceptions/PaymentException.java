@@ -1,8 +1,9 @@
 package ru.sber.exceptions;
 
+
 public class PaymentException extends RuntimeException {
     /**
-     * Исключение для вывода сообщения об ошибке при неудачной оплате корзины с товарами
+     * Выбрасывает сообщение при неудачной оплате товара
      * @param message сообщение об ошибке
      */
     public PaymentException(String message) {

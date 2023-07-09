@@ -1,83 +1,72 @@
 package ru.sber.services;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-import ru.sber.entities.*;
-import ru.sber.exceptions.PaymentException;
-import ru.sber.proxies.BankAppProxy;
+import ru.sber.entities.Cart;
+import ru.sber.entities.Product;
+import ru.sber.entities.User;
 import ru.sber.repositories.CartRepository;
-import ru.sber.repositories.ClientRepository;
-import ru.sber.repositories.ProductCartRepository;
 import ru.sber.repositories.ProductRepository;
+import ru.sber.repositories.UserRepository;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+/**
+ * Сервис для взаимодействия с корзиной пользователя
+ */
 @Service
 public class CartServiceImpl implements CartService {
 
-    private final CartRepository cartRepository;
-    private final ClientRepository clientRepository;
-    private final ProductRepository productRepository;
-    private final ProductCartRepository productCartRepository;
-    private final BankAppProxy bankAppProxy;
+    CartRepository cartRepository;
+    UserRepository userRepository;
+    ProductRepository productRepository;
 
-    public CartServiceImpl(
-            CartRepository cartRepository,
-            ClientRepository clientRepository,
-            ProductRepository productRepository,
-            ProductCartRepository productCartRepository,
-            BankAppProxy bankAppProxy) {
+    @Autowired
+    public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, ProductRepository productRepository) {
         this.cartRepository = cartRepository;
-        this.clientRepository = clientRepository;
+        this.userRepository = userRepository;
         this.productRepository = productRepository;
-        this.productCartRepository = productCartRepository;
-        this.bankAppProxy = bankAppProxy;
     }
 
     @Override
-    public void addProductById(long cartId, long productId) {
-        Optional<Product> productOptional = productRepository.findById(productId);
-        Optional<Cart> cartOptional = cartRepository.findById(cartId);
+    public boolean addToCart(long userId, long productId) {
+        Optional<Cart> cart = cartRepository.findCartByProduct_IdAndClient_Id(productId, userId);
 
-        if (productOptional.isPresent() && cartOptional.isPresent()) {
-            Product product = productOptional.get();
-            Cart cart = cartOptional.get();
+        Cart shoppingCart = cart.orElseGet(() -> {
+            Optional<User> user = userRepository.findById(userId);
+            Optional<Product> product = productRepository.findById(productId);
 
-            Optional<ProductCart> existingProductCart = productCartRepository.findByProductIdAndCartId(productId, cartId);
-
-            ProductCart productCart;
-
-            if (existingProductCart.isPresent()) {
-                productCart = existingProductCart.get();
-                productCart.setQuantity(productCart.getQuantity() + 1);
-            } else {
-                productCart = new ProductCart();
-                productCart.setProduct(product);
-                productCart.setCart(cart);
-                productCart.setQuantity(1);
+            if (user.isPresent() && product.isPresent()) {
+                Cart newCart = new Cart();
+                newCart.setClient(user.get());
+                newCart.setProduct(product.get());
+                newCart.setQuantity(0);
+                return newCart;
             }
-            productCartRepository.save(productCart);
-        } else if (cartOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Корзина не найдена");
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Товар не найден");
+
+            return null;
+        });
+
+        if (shoppingCart != null) {
+            shoppingCart.setQuantity(shoppingCart.getQuantity() + 1);
+            cartRepository.save(shoppingCart);
+            return true;
         }
+
+        return false;
+
     }
 
 
     @Override
-    public boolean changeQuantity(long cartId, long productId, long quantity) {
-        Optional<ProductCart> existingProductCart = productCartRepository.findByProductIdAndCartId(productId, cartId);
-
-        if (existingProductCart.isPresent()) {
-            ProductCart productCart = existingProductCart.get();
-            productCart.setQuantity(quantity);
-            productCartRepository.save(productCart);
+    public boolean updateProductAmount(long userId, long productId, int amount) {
+        Optional<Cart> cart = cartRepository.findCartByProduct_IdAndClient_Id(productId, userId);
+        if (cart.isPresent()) {
+            Cart shoppingCart = cart.get();
+            shoppingCart.setQuantity(amount);
+            cartRepository.save(shoppingCart);
             return true;
         }
 
@@ -85,131 +74,43 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional
-    public boolean deleteProductFromCart(long cartId, long productId) {
-        Optional<Product> productOptional = productRepository.findById(productId);
-        Optional<Cart> cartOptional = cartRepository.findById(cartId);
-        if (productOptional.isPresent() && cartOptional.isPresent()) {
-            Product product = new Product();
-            product.setId(productId);
-
-            Cart cart = new Cart();
-            cart.setId(cartId);
-
-            productCartRepository.deleteByProductAndCart(product, cart);
-
+    public boolean deleteProduct(long userId, long productId) {
+        Optional<Cart> cart = cartRepository.findCartByProduct_IdAndClient_Id(productId, userId);
+        if (cart.isPresent()) {
+            long idCart = cart.get().getId();
+            cartRepository.deleteById(idCart);
             return true;
         }
-        if (cartOptional.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Корзина не найдена");
-        }
-        else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Товар не найден");
-        }
+
+        return false;
     }
 
     @Override
-    public Optional<Payment> payment(long cartId) {
-        Optional<Client> clientOptional = clientRepository.findById(cartId);
-
-        if (clientOptional.isPresent()) {
-            Client client = clientOptional.get();
-            BigDecimal balance = bankAppProxy.getBalance(client.getId());
-
-            BigDecimal totalCost = getTotalCost(client.getCart().getId());
-
-            if (balance.compareTo(totalCost) >= 0 && checkProductAvailability(client.getCart().getId())) {
-
-                BigDecimal newBalance = balance.subtract(totalCost);
-                bankAppProxy.setBalance(client.getId(), newBalance);
-
-                updateProductQuantity(client.getCart().getId());
-
-                Payment payment = new Payment(totalCost, newBalance);
-
-                return Optional.of(payment);
-            }
-        }
-
-        throw new PaymentException("Оплата не прошла");
-    }
-
-    /**
-     * Считает общую стоимость товара в корзине
-     * @param cartId id корзины
-     * @return общую стоимость товара в корзине
-     */
-    private BigDecimal getTotalCost(long cartId) {
-        List<ProductCart> productCarts = productCartRepository.findByCartId(cartId);
-        BigDecimal totalCost = BigDecimal.ZERO;
-
-        for (ProductCart productCart : productCarts) {
-            Product product = productCart.getProduct();
-            BigDecimal productPrice = product.getPrice();
-            long productQuantity = productCart.getQuantity();
-
-            BigDecimal productTotalCost = productPrice.multiply(BigDecimal.valueOf(productQuantity));
-            totalCost = totalCost.add(productTotalCost);
-        }
-
-        return totalCost;
-    }
-
-    /**
-     * Проверяет достаточно ли количество товара на складе
-     * @param cartId id корзины
-     * @return true, если достаточное количество товара, иначе false
-     */
-    private boolean checkProductAvailability(long cartId) {
-        List<ProductCart> productCarts = productCartRepository.findByCartId(cartId);
-
-        for (ProductCart productCart : productCarts) {
-            Product product = productCart.getProduct();
-            long productQuantity = productCart.getQuantity();
-
-            if (product.getQuantity() < productQuantity) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Обновляет количество товара на складе после успешной покупки
-     * @param cartId id корзины
-     */
-    private void updateProductQuantity(long cartId) {
-        List<ProductCart> productCarts = productCartRepository.findByCartId(cartId);
-
-        for (ProductCart productCart : productCarts) {
-            Product product = productCart.getProduct();
-            long productQuantity = productCart.getQuantity();
-
-            long updatedQuantity = product.getQuantity() - productQuantity;
-            product.setQuantity(updatedQuantity);
-            productRepository.save(product);
-        }
+    public void clearCart(long userId) {
+        cartRepository.deleteCartByClientId(userId);
     }
 
     @Override
-    public List<Product> getCartById(long cartId) {
-        Optional<Client> clientOptional = clientRepository.findById(cartId);
+    public List<Product> getListOfProductsInCart(long userId) {
+        List<Cart> carts = cartRepository.findCartByClient_Id(userId);
 
-        if (clientOptional.isPresent()) {
-            Client client = clientOptional.get();
-            List<ProductCart> productCarts = productCartRepository.findByCartId(client.getCart().getId());
-            List<Product> products = new ArrayList<>();
+        List<Product> productsInCart = carts.stream()
+                .map(cart -> {
+                    Product product = new Product();
+                    product.setId(cart.getProduct().getId());
+                    product.setName(cart.getProduct().getName());
+                    product.setPrice(cart.getProduct().getPrice());
+                    product.setQuantity(cart.getQuantity());
+                    return product;
+                })
+                .collect(Collectors.toList());
 
-            for (ProductCart productCart : productCarts) {
-                Product product = productCart.getProduct();
-                product.setQuantity(productCart.getQuantity());
-                products.add(product);
-            }
+        return productsInCart;
 
-            return products;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Корзина не найдена");
-        }
+    }
+
+    @Override
+    public int countProductsInCart(long userId) {
+        return cartRepository.countCartsByClient_Id(userId);
     }
 }

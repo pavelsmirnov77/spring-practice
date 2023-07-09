@@ -1,26 +1,30 @@
 package ru.sber.proxies;
 
-import ru.sber.entities.ClientBank;
+import ru.sber.entities.BankCard;
 
 import java.math.BigDecimal;
 
 public interface BankAppInterfaceProxy {
     /**
-     * Возвращает баланс клиента
-     * @param clientId id клиента
-     * @return баланс клиента
+     * Возвращает баланс банковской карты
+     *
+     * @param numberCard номер банковской карты
+     * @return баланс бансковской карты
      */
-    BigDecimal getBalance(long clientId);
+    BigDecimal getBalance(long numberCard);
     /**
-     * Обновляет значение баланса клиента
-     * @param clientId id клиента
+     * Обновляет значение баланса банковской карты
+     *
+     * @param numberCard номер банковской карты
      * @param newBalance новое значение баланса
      */
-    void setBalance(long clientId, BigDecimal newBalance);
+    void setBalance(long numberCard, BigDecimal newBalance);
 
     /**
-     * Добавляет клиента в список банковских клиентов
-     * @param client клиент интернет магазина
+     * Добавляет новой банковской карты
+     *
+     * @param bankCard банковская карта
      */
-    void addClient(ClientBank client);
+    void addClient(BankCard bankCard);
+
 }

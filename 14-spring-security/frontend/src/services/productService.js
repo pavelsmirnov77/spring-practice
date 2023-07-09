@@ -1,5 +1,6 @@
 import axios from "axios";
 import {set} from "../slices/productsSlice";
+import authHeader from "./auth-header";
 
 const API_URL = "http://localhost:8081/products";
 
@@ -21,7 +22,8 @@ const getProducts = (dispatch) => {
 };
 
 const createProduct = (product, dispatch) => {
-    return axios.post(API_URL, product).then(
+
+    return axios.post(API_URL, product, {headers: authHeader()}).then(
         (response) => {
             getProducts(dispatch)
         },
@@ -35,7 +37,7 @@ const createProduct = (product, dispatch) => {
 };
 
 const updateProduct = (product, dispatch) => {
-    return axios.put(API_URL, product).then(
+    return axios.put(API_URL, product, {headers: authHeader()}).then(
         (response) => {
             getProducts(dispatch)
         },
@@ -49,7 +51,7 @@ const updateProduct = (product, dispatch) => {
 };
 
 const deleteProduct = (id, dispatch) => {
-    return axios.delete(API_URL + `/${id}`).then(
+    return axios.delete(API_URL + `/${id}`, {headers: authHeader()}).then(
         (response) => {
             getProducts(dispatch)
         },

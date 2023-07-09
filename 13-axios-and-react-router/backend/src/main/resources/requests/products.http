@@ -1,0 +1,30 @@
+###Добавление товара
+POST localhost:8081/products
+Content-Type: application/json
+
+{
+  "name": "Товар1",
+  "price": 111,
+  "quantity": 11
+}
+
+###Обновление товара
+PUT localhost:8081/products
+Content-Type: application/json
+
+{
+  "id": 2,
+  "name": "Товар2",
+  "price": 22,
+  "amount": 11
+}
+
+###Удаление товара
+DELETE localhost:8081/products/1
+
+###Получение товара
+GET localhost:8081/products/1
+
+###Получение товара по имени
+GET localhost:8080/products?name=
+Content-Type: application/json
