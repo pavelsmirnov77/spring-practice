@@ -33,9 +33,18 @@ const CartPage = () => {
 
     const handleUpdateQuantity = (productId, quantity) => {
         const newProductAmount = {
-            amount: quantity,
+            quantity: quantity,
         };
-        CartService.updateAmount(userId, productId, newProductAmount, dispatch);
+        CartService.updateAmount(userId, productId, newProductAmount, dispatch)
+            .then(() => {
+                const updatedData = data.map((item) =>
+                    item.itemId === productId ? {...item, quantity} : item
+                );
+                setData(updatedData);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     const handlePayment = () => {
@@ -73,15 +82,25 @@ const CartPage = () => {
 
     const handleSave = (record) => {
         setEditingItemId(null);
+        const newData = data.map((item) =>
+            item.key === record.key ? {...item, quantity: record.quantity} : item
+        );
+        setData(newData);
         handleUpdateQuantity(record.itemId, record.quantity);
     };
 
     const handleQuantityChange = (userId, itemId, value) => {
-        const newData = data.map((item) =>
-            item.key === itemId ? { ...item, quantity: value } : item
-        );
+        const newData = data.map((item) => {
+            if (item.itemId === itemId) {
+                const updatedItem = {...item, quantity: value};
+                handleUpdateQuantity(itemId, value);
+                return updatedItem;
+            }
+            return item;
+        });
         setData(newData);
     };
+
 
     const handleCancel = () => {
         setEditingItemId(null);

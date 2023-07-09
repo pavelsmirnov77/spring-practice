@@ -6,7 +6,7 @@ const API_URL = "http://localhost:8081/cart";
 
 const addToCart = (userId, productId, dispatch) => {
 
-    return axios.post(`${API_URL}/${userId}/product/${productId}`, {amount: 1}).then(
+    return axios.post(`${API_URL}/${userId}/product/${productId}`, {quantity: 1}).then(
         () => {
             UserService.getUser(userId, dispatch)
         },
@@ -19,8 +19,8 @@ const addToCart = (userId, productId, dispatch) => {
         });
 };
 
-const updateAmount = (userId, productId, amount, dispatch) => {
-    return axios.put(`${API_URL}/${userId}/product/${productId}`, amount).then(
+const updateAmount = (userId, productId, quantity, dispatch) => {
+    return axios.put(`${API_URL}/${userId}/product/${productId}`, quantity).then(
         () => {
             UserService.getUser(userId, dispatch)
         },
