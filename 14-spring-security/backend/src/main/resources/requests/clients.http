@@ -4,13 +4,12 @@ Content-Type: application/json
 
 {
   "email": "123@yandex.ru",
-  "login": "pavel123",
-  "password": "123",
-  "username": "Павел"
+  "username": "Павел",
+  "password": "123"
 }
 
 ###Получение клиента
-GET localhost:8081/users/1
+GET localhost:8081/users/4
 Content-Type: application/json
 
 ###Удаление клиента

@@ -13,10 +13,10 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     /**
-     * Ищет товары, содержащие в названии определенную строку
+     * Ищет все товары, содержащие в названии определенную строку
      *
-     * @param name имя строки для поиска
-     * @return список товаров
+     * @param name Строка, по которой идет поиск
+     * @return Возвращает полученный список товаров
      */
     List<Product> findAllByNameContainingIgnoreCase(String name);
 }

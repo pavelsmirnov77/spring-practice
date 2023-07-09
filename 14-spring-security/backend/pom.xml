@@ -11,8 +11,8 @@
     <groupId>ru.sber</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>backend</name>
-    <description>backend</description>
+    <name>14-backend</name>
+    <description>14-backend</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -72,7 +72,6 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

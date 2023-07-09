@@ -1,15 +1,13 @@
 package ru.sber.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
 
 /**
- * Сущность пользователя с неполной информацией
+ * Пользователь с ограниченным количеством полей
  */
 @Data
-@AllArgsConstructor
 public class UserResponse {
     private long id;
     private String name;

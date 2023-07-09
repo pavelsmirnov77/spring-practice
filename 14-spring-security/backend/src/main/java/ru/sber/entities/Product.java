@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * Сущность товара
+ * Товар
  */
 @Entity
 @Data
@@ -27,5 +27,5 @@ public class Product {
     private BigDecimal price;
 
     @Column(nullable = false)
-    private long quantity;
+    private Integer quantity;
 }

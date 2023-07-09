@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
                 productRepository.deleteById(productId);
                 return true;
             }
-            throw new ProductsException("Товар не найден");
+            throw new ProductsException("Товара не существует");
         }
 
         return false;

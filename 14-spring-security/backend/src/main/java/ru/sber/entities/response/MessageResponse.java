@@ -2,7 +2,6 @@ package ru.sber.entities.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 @Data
 @AllArgsConstructor
 public class MessageResponse {

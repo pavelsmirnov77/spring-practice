@@ -24,12 +24,12 @@ public class PaymentController {
     /**
      * Совершает платеж
      *
-     * @param payment сущность платежа
-     * @return true если платеж прошёл успешно, иначе false
+     * @param payment Платеж
+     * @return статус выполнения операции
      */
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping
-    //@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> payment(@Valid @RequestBody Payment payment) {
+    public ResponseEntity<?> pay(@Valid @RequestBody Payment payment) {
 
         log.info("Попытка совершения оплаты");
         boolean isPay = paymentService.pay(payment);
@@ -37,7 +37,7 @@ public class PaymentController {
         if (isPay) {
             return ResponseEntity.accepted().build();
         } else {
-            return ResponseEntity.badRequest().body("Оплата не прошла");
+            return ResponseEntity.badRequest().body("Средств на счету недостаточно");
         }
 
     }

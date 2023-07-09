@@ -2,18 +2,22 @@ package ru.sber.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Пользователь
+ */
 @Entity
-@Table(name = "users",
+@AllArgsConstructor
+@Table( name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "login"),
+                @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
 @Data
@@ -23,20 +27,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Column(nullable = false)
     @Size(max = 20)
     private String username;
 
-    @NotBlank
+    @Column(nullable = false)
     @Size(max = 50)
     @Email
     private String email;
 
-    @NotBlank
-    @Size(max = 50)
-    private String login;
-
-    @NotBlank
+    @Column(nullable = false)
     @Size(max = 120)
     private String password;
 
@@ -51,4 +51,5 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
 }
