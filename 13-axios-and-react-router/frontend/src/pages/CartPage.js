@@ -5,6 +5,7 @@ import UserService from "../services/userService";
 import CartService from "../services/cartService";
 import PaymentService from "../services/paymentService";
 import cartService from "../services/cartService";
+import userService from "../services/userService";
 
 const CartPage = () => {
     const userId = useSelector((state) => state.users.user.id);
@@ -13,8 +14,11 @@ const CartPage = () => {
     const products = useSelector((state) => state.products.products);
 
     useEffect(() => {
-        UserService.getUser(userId, dispatch);
-    }, []);
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            userService.getUser(userId, dispatch);
+        }
+    }, [dispatch]);
 
     const currentDate = new Date().toLocaleString();
     const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);

@@ -1,8 +1,8 @@
-import {Card, Avatar, Typography, Button} from 'antd';
+import {Card, Avatar, Typography, Button, message} from 'antd';
 import {useSelector, useDispatch} from 'react-redux';
-import UserService from "../services/userService";
 import {useEffect} from "react";
 import {Link} from 'react-router-dom';
+import userService from "../services/userService";
 
 const {Title, Text} = Typography;
 
@@ -12,11 +12,16 @@ const ProfileCard = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        UserService.getUser(userId, dispatch);
-    }, []);
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            userService.getUser(userId, dispatch);
+        }
+    }, [dispatch]);
 
     const handleLogout = () => {
-        UserService.logout();
+        userService.logout()
+        message.success("Вы успешно вышли из аккаунта", 3);
+        window.location.reload();
     };
 
     if (!userId) {

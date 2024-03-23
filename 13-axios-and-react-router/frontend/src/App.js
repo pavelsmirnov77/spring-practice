@@ -1,5 +1,5 @@
 import {Layout, Menu} from 'antd';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     ShoppingCartOutlined,
     InfoCircleFilled,
@@ -21,19 +21,28 @@ const App = () => {
     const {Header, Content, Footer, Sider} = Layout;
 
     const [collapsed, setCollapsed] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const userId = localStorage.getItem("userId");
+        setIsAuthenticated(!!userId);
+    }, []);
+
     const items = [
-        {
-            key: '1',
-            icon: <UserSwitchOutlined/>,
-            label: 'Регистрация',
-            url: '/registration'
-        },
-        {
-            key: '2',
-            icon: <LoginOutlined/>,
-            label: 'Войти',
-            url: '/auth'
-        },
+        ...(isAuthenticated ? [] : [
+            {
+                key: '1',
+                icon: <UserSwitchOutlined/>,
+                label: 'Регистрация',
+                url: '/registration'
+            },
+            {
+                key: '2',
+                icon: <LoginOutlined/>,
+                label: 'Войти',
+                url: '/auth'
+            }
+        ]),
         {
             key: '3',
             icon: <UnorderedListOutlined/>,

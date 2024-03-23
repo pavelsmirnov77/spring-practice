@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("users")
+@RequestMapping("user")
 public class UserController {
 
     private final UserService userService;
@@ -38,7 +38,7 @@ public class UserController {
     public ResponseEntity<?> signUp(@RequestBody User user) {
         long userId = userService.signUp(user);
         log.info("Регистрация пользователя {}", user);
-        return ResponseEntity.created(URI.create("/users/" + userId)).build();
+        return ResponseEntity.created(URI.create("/user/" + userId)).build();
     }
 
     /**
@@ -48,18 +48,24 @@ public class UserController {
      * @return пользователь с ограниченным количеством полей
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable long id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable String id) {
 
-        log.info("Выводим данные о пользователе с id: {}", id);
+        try {
+            long userId = Long.parseLong(id);
+            log.info("Выводим данные о пользователе с id: {}", id);
 
-        Optional<User> user = userService.getUserById(id);
+            Optional<User> user = userService.getUserById(userId);
 
-        if (user.isPresent()) {
-            UserResponse userResponse = new UserResponse(user.get());
-            userResponse.setCart(cartService.getListOfProductsInCart(id));
-            return ResponseEntity.ok().body(userResponse);
-        } else {
-            return ResponseEntity.notFound().build();
+            if (user.isPresent()) {
+                UserResponse userResponse = new UserResponse(user.get());
+                userResponse.setCart(cartService.getListOfProductsInCart(userId));
+                return ResponseEntity.ok().body(userResponse);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch(NumberFormatException e) {
+            log.error("Некорректный формат ID: {}", id);
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
