@@ -2,7 +2,7 @@ import axios from "axios";
 import {set} from "../slices/usersSlice";
 import {setCart} from "../slices/productsCartSlice";
 
-const API_URL = "http://localhost:8081/users";
+const API_URL = "http://localhost:8081/user";
 
 const getUser = (id, dispatch) => {
     return axios.get(API_URL + `/${id}`).then(
@@ -37,6 +37,7 @@ const authorize = (loginData, dispatch) => {
     return axios.get(API_URL, {params: loginData}).then(
         (response) => {
             const userId = response.data;
+            localStorage.setItem("userId", userId);
             getUser(userId, dispatch);
         },
         (error) => {
@@ -55,6 +56,7 @@ const authorize = (loginData, dispatch) => {
 const logout = () => {
     console.log("Выход из аккаунта")
     localStorage.removeItem("users");
+    localStorage.removeItem("userId")
 };
 
 

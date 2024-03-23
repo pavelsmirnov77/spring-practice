@@ -19,6 +19,7 @@ const AuthForm = () => {
         UserService.authorize(loginData, dispatch)
         message.success("Вы успешно вошли в аккаунт");
         navigate("/user");
+        window.location.reload();
     };
 
     return (
