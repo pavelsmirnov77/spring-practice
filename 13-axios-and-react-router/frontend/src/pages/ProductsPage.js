@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Space, Table, message, Input} from 'antd';
+import {Button, Space, Table, message, Input, Card, Typography} from 'antd';
 import {useDispatch, useSelector} from 'react-redux';
 import ProductService from '../services/productService';
 import CartService from '../services/cartService';
+import {Link} from "react-router-dom";
+const {Title, Text} = Typography;
 
 const ProductTable = () => {
     const allProducts = useSelector((state) => state.products.products);
@@ -92,6 +94,24 @@ const ProductTable = () => {
             ),
         },
     ];
+
+    if (!userId) {
+        return (
+            <Card>
+                <div style={{textAlign: 'center', marginBottom: '16px'}}>
+                    <Title level={4}>Вы не авторизированы</Title>
+                    <div>
+                        <Link to="/registration">
+                            <Button type="primary" style={{marginRight: '8px'}}>Зарегистрироваться</Button>
+                        </Link>
+                        <Link to="/auth">
+                            <Button>Войти</Button>
+                        </Link>
+                    </div>
+                </div>
+            </Card>
+        );
+    }
 
     return (
         <div>

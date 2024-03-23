@@ -1,11 +1,11 @@
-import { Badge, Button, InputNumber, message, Space, Table } from 'antd';
+import {Badge, Button, Card, InputNumber, message, Space, Table, Typography} from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import UserService from "../services/userService";
 import CartService from "../services/cartService";
 import PaymentService from "../services/paymentService";
-import cartService from "../services/cartService";
 import userService from "../services/userService";
+import {Link} from "react-router-dom";
+const {Title, Text} = Typography;
 
 const CartPage = () => {
     const userId = useSelector((state) => state.users.user.id);
@@ -238,6 +238,24 @@ const CartPage = () => {
             totalCost,
         },
     ];
+
+    if (!userId) {
+        return (
+            <Card>
+                <div style={{textAlign: 'center', marginBottom: '16px'}}>
+                    <Title level={4}>Вы не авторизированы</Title>
+                    <div>
+                        <Link to="/registration">
+                            <Button type="primary" style={{marginRight: '8px'}}>Зарегистрироваться</Button>
+                        </Link>
+                        <Link to="/auth">
+                            <Button>Войти</Button>
+                        </Link>
+                    </div>
+                </div>
+            </Card>
+        );
+    }
 
     return (
         <>

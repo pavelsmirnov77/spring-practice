@@ -103,7 +103,7 @@ const App = () => {
                         <Route path="*" element={<NotFoundPage/>}/>
                     </Routes>
                 </Content>
-                <Footer style={{textAlign: 'center'}}>Ant Design ©2023 Aliexpress "Овощи и фрукты"</Footer>
+                <Footer style={{textAlign: 'center'}}>Онлайн магазин ©2024</Footer>
             </Layout>
         </Layout>
     );

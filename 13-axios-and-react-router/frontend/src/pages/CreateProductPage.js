@@ -1,10 +1,13 @@
-import {Button, Card, Form, Input, InputNumber, message} from 'antd';
-import {useDispatch} from 'react-redux';
+import {Button, Card, Form, Input, InputNumber, message, Typography} from 'antd';
+import {useDispatch, useSelector} from 'react-redux';
 import ProductService from '../services/productService';
+import {Link} from "react-router-dom";
+const {Title, Text} = Typography;
 
 const CreateProductPage = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
+    const userId = useSelector((state) => state.users.user.id);
 
     const onFinish = (values) => {
         ProductService.createProduct(values, dispatch)
@@ -27,6 +30,24 @@ const CreateProductPage = () => {
     const onReset = () => {
         form.resetFields();
     };
+
+    if (!userId) {
+        return (
+            <Card>
+                <div style={{textAlign: 'center', marginBottom: '16px'}}>
+                    <Title level={4}>Вы не авторизированы</Title>
+                    <div>
+                        <Link to="/registration">
+                            <Button type="primary" style={{marginRight: '8px'}}>Зарегистрироваться</Button>
+                        </Link>
+                        <Link to="/auth">
+                            <Button>Войти</Button>
+                        </Link>
+                    </div>
+                </div>
+            </Card>
+        );
+    }
 
     return (
         <Card title="Добавить товар">
