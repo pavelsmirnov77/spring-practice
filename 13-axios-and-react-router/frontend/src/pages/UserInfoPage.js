@@ -45,7 +45,7 @@ const ProfileCard = () => {
     return (
         <Card>
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px'}}>
-                <Avatar size={128} shape="circle" src='https://782329.selcdn.ru/leonardo/uploadsForSiteId/203391/content/dcaf429d-705a-4b5c-b4ef-62bae0d0488f.png'/>
+                <Avatar size={128} shape="circle" src='https://mobile-comp.com/images/user.png'/>
             </div>
 
             <div style={{textAlign: 'center', marginBottom: '16px'}}>

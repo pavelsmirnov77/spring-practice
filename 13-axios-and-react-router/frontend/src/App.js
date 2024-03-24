@@ -46,7 +46,7 @@ const App = () => {
         {
             key: '3',
             icon: <UnorderedListOutlined/>,
-            label: 'Список товаров',
+            label: 'Список продуктов',
             url: '/',
         },
         {
@@ -87,9 +87,8 @@ const App = () => {
             </Sider>
             <Layout style={{marginLeft: collapsed ? 80 : 200}}>
                 <Header className="app-header">
-                    <h1 style={{color: 'white', display: 'flex', alignItems: 'center', marginTop: '8px'}}>
-                        Онлайн магазин
-                    </h1>
+                    <h1 style={{color: 'white', display: 'flex', alignItems: 'center', marginTop: '8px'}}>Продуктовый
+                        онлайн магазин</h1>
                     <div style={{marginLeft: 'auto', marginRight: '16px', display: 'flex', alignItems: 'center'}}>
                     </div>
                 </Header>
